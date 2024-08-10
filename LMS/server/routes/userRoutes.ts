@@ -3,6 +3,7 @@ import {
   activateUser,
   loginUser,
   registrationUser,
+  logoutUser
 } from "../controllers/userController";
 
 const userRouter = express.Router();
@@ -10,5 +11,6 @@ const userRouter = express.Router();
 userRouter.post("/registration", registrationUser);
 userRouter.post("/activate-user", activateUser);
 userRouter.post("/login", loginUser);
+userRouter.post("/logout", logoutUser);
 
 export default userRouter;
