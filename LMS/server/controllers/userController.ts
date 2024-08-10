@@ -1,5 +1,5 @@
 require("dotenv").config();
-import userModel from "../model/userModel";
+import userModel, { IUser } from "../model/userModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
 import { NextFunction, Request, Response } from "express";
@@ -81,3 +81,46 @@ export const createActivationToken = (user: any): IActivationToken => {
 
   return { token, activationCode };
 };
+
+// activate user
+interface IActivateToken {
+  activation_token: string;
+  activation_code: string;
+}
+
+export const activateUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { activation_token, activation_code } = req.body as IActivateToken;
+
+      const newUser = jwt.verify(
+        activation_token,
+        process.env.ACTIVATION_SECRET as string
+      ) as { user: IRegistrationBody; activationCode: string };
+
+      if (newUser.activationCode !== activation_code) {
+        return next(new ErrorHandler("Invalid activation code", 400));
+      }
+
+      const { name, email, password } = newUser.user;
+
+      const existUser = await userModel.findOne({ email });
+
+      if (existUser) {
+        return next(new ErrorHandler("Email already exists", 400));
+      }
+
+      const user = await userModel.create({
+        name,
+        email,
+        password,
+      });
+
+      res.status(201).json({
+        success: true,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
