@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectDb } from "./utils/db";
+import userRouter from './routes/userRoutes'
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +20,9 @@ app.use(
   })
 );
 
+// import routes
+app.use("/api/v1/user", userRouter)
+
 // testing api
 app.post("/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
@@ -33,6 +37,8 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
   err.statusCode = 404;
   next(err);
 });
+
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on localhost ${process.env.PORT}`);
