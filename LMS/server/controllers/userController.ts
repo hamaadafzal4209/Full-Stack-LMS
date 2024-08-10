@@ -7,6 +7,7 @@ import jwt, { Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
+import { sendToken } from "../utils/jwt";
 
 interface IRegistrationBody {
   name: string;
@@ -154,8 +155,7 @@ export const loginUser = catchAsyncErrors(
         return next(new ErrorHandler("Wrong Cradientials", 400));
       }
 
-      
-      
+      sendToken(user, 200, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
