@@ -2,28 +2,35 @@ import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectDb } from "./utils/db";
-import userRouter from './routes/userRoutes'
+import userRouter from "./routes/userRoutes";
 require("dotenv").config();
 
 const app = express();
 
-// body parser
+// Middleware to parse JSON bodies
 app.use(express.json({ limit: "50mb" }));
 
-// cookie parser
+// Middleware to parse cookies
 app.use(cookieParser());
 
-// cors
+// CORS configuration
 app.use(
   cors({
     origin: process.env.ORIGIN,
   })
 );
 
-// import routes
-app.use("/api/v1/user", userRouter)
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`Received request: ${req.method} ${req.url}`);
+  console.log("Request body:", req.body);
+  next();
+});
 
-// testing api
+// Import routes
+app.use("/api/v1/user", userRouter);
+
+// Test API route
 app.post("/test", (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
     success: true,
@@ -31,16 +38,24 @@ app.post("/test", (req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// unknown routes
+// Handle unknown routes
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   const err = new Error(`Route ${req.originalUrl} not found!`) as any;
   err.statusCode = 404;
   next(err);
 });
 
+// Centralized error handling middleware
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
 
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on localhost ${process.env.PORT}`);
+// Connect to the database and start the server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server is running on localhost ${PORT}`);
   connectDb();
 });
