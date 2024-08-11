@@ -18,6 +18,6 @@ userRouter.post("/login", loginUser);
 userRouter.get("/logout", isAuthenticated, logoutUser);
 userRouter.get("/refresh", updateAccessToken);
 userRouter.get("/me", isAuthenticated, getUserInfo);
-userRouter.post("/socialAuth", socialAuth);
+userRouter.post("/social-auth", socialAuth);
 
 export default userRouter;
