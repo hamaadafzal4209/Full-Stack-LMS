@@ -13,6 +13,7 @@ import {
   sendToken,
 } from "../utils/jwt";
 import { redis } from "../utils/redis";
+import { getUserById } from "../services/userServices";
 
 interface IRegistrationBody {
   name: string;
@@ -233,6 +234,17 @@ export const updateAccessToken = catchAsyncErrors(
       await redis.set(user._id, JSON.stringify(user), "EX", 604800);
 
       next();
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// Get user information
+export const getUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getUserById(req.user?._id as unknown, res);
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
