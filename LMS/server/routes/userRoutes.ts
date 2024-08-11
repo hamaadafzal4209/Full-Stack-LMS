@@ -3,7 +3,9 @@ import {
   activateUser,
   loginUser,
   registrationUser,
-  logoutUser
+  logoutUser,
+  updateAccessToken,
+  getUserInfo,
 } from "../controllers/userController";
 import { isAuthenticated } from "../middlewares/auth";
 
@@ -12,6 +14,8 @@ const userRouter = express.Router();
 userRouter.post("/registration", registrationUser);
 userRouter.post("/activate-user", activateUser);
 userRouter.post("/login", loginUser);
-userRouter.post("/logout", isAuthenticated,logoutUser);
+userRouter.get("/logout", isAuthenticated, logoutUser);
+userRouter.get("/refresh", updateAccessToken);
+userRouter.get("/me", isAuthenticated, getUserInfo);
 
 export default userRouter;
