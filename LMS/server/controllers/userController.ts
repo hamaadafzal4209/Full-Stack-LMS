@@ -14,6 +14,7 @@ import {
 } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import { getUserById } from "../services/userServices";
+import cloudinary from "cloudinary";
 
 interface IRegistrationBody {
   name: string;
@@ -337,7 +338,9 @@ export const updatePassword = catchAsyncErrors(
       const { oldPassword, newPassword } = req.body as IUpdatePassword;
 
       if (!oldPassword || !newPassword) {
-        return next(new ErrorHandler("Please enter both new and old passwords", 400));
+        return next(
+          new ErrorHandler("Please enter both new and old passwords", 400)
+        );
       }
 
       const user = await userModel.findById(req.user?._id).select("+password");
@@ -361,7 +364,7 @@ export const updatePassword = catchAsyncErrors(
       res.status(200).json({
         success: true,
         message: "Password updated successfully",
-        user
+        user,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
@@ -369,3 +372,61 @@ export const updatePassword = catchAsyncErrors(
   }
 );
 
+// update profile picture
+interface IUpdateProfilePicture {
+  avatar: {
+    public_id: string;
+    url: string;
+  };
+}
+
+export const updateProfilePicture = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { avatar } = req.body as IUpdateProfilePicture;
+      const userId = req.user?._id;
+      const user = await userModel.findById(userId);
+
+      if (!user) {
+        return next(new ErrorHandler("Invalid User", 400));
+      }
+
+      if (avatar && user) {
+        if (user?.avatar?.public_id) {
+          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+
+          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+
+          user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          };
+        } else {
+          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+
+          user.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          };
+        }
+      }
+
+      await user?.save();
+      await redis.set(userId, JSON.stringify(user));
+
+      res.status(201).json({
+        success: true,
+        message: "Avatar saved successfully",
+        user: user,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 404));
+    }
+  }
+);
