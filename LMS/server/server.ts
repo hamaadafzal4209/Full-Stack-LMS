@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectDb } from "./utils/db";
 import userRouter from "./routes/userRoutes";
+import { v2 as cloudinary } from "cloudinary";
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +20,13 @@ app.use(
     origin: process.env.ORIGIN,
   })
 );
+
+// cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  secret_key: process.env.CLOUD_SECRET_KEY,
+});
 
 // Logging middleware
 app.use((req, res, next) => {
