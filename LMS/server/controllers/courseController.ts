@@ -4,6 +4,7 @@ import cloudinary from "cloudinary";
 import { createCourse } from "../services/courseService";
 import ErrorHandler from "../utils/ErrorHandler";
 import courseModel from "../model/courseModel";
+import { redis } from "../utils/redis";
 
 export const uploadCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -90,3 +91,38 @@ export const editCourse = catchAsyncErrors(
     }
   }
 );
+
+// Get single course --- without purchasing
+export const getSingleCourse = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const courseId = req.params.id;
+      const isCacheExists = await redis.get(courseId);
+
+      if (isCacheExists) {
+        const course = JSON.parse(isCacheExists);
+        res.status(200).json({
+          success: true,
+          course: course,
+        });
+      } else {
+        const course = await courseModel
+          .findById(courseId)
+          .select(
+            "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+          );
+
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800);
+
+        res.status(201).json({
+          success: true,
+          course: course,
+        });
+      }
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
