@@ -37,8 +37,8 @@ app.use((req, res, next) => {
 });
 
 // Import routes
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/", userRouter);
+app.use("/api/v1/", courseRouter);
 
 // Test API route
 app.post("/test", (req: Request, res: Response, next: NextFunction) => {
