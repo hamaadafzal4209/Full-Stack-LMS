@@ -4,6 +4,7 @@ import cors from "cors";
 import { connectDb } from "./utils/db";
 import userRouter from "./routes/userRoutes";
 import { v2 as cloudinary } from "cloudinary";
+import courseRouter from "./routes/courseRoutes";
 require("dotenv").config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 // Import routes
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/course", courseRouter);
 
 // Test API route
 app.post("/test", (req: Request, res: Response, next: NextFunction) => {

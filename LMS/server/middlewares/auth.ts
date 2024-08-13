@@ -1,8 +1,8 @@
+import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import { catchAsyncErrors } from "./catchAsyncErrors";
-import { NextFunction, Response } from "express";
 
 // Authenticated users
 export const isAuthenticated = catchAsyncErrors(
