@@ -41,36 +41,49 @@ export const editCourse = catchAsyncErrors(
       const data = req.body;
       const thumbnail = data.thumbnail;
       const courseId = req.params.id;
-      const courseData = (await courseModel.findById(courseId)) as any;
-      if (thumbnail && !thumbnail.startsWith("https")) {
-        await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
 
-        const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
-          folder: "courses",
-        });
-
-        data.thumbnail = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
-        };
+      // Check if course exists
+      const courseData = await courseModel.findById(courseId);
+      if (!courseData) {
+        return next(new ErrorHandler("Course not found", 404));
       }
 
-      if (thumbnail.startsWith("https")) {
-        data.thumbnail = {
-          public_id: courseData?.thumbnail.public_id,
-          url: courseData?.thumbnail.url,
-        };
+      if (thumbnail) {
+        if (thumbnail.startsWith("https")) {
+          // No need to update thumbnail if it starts with https
+          data.thumbnail = {
+            public_id: courseData.thumbnail.public_id,
+            url: courseData.thumbnail.url,
+          };
+        } else {
+          // Handle file URL (assuming it is a new URL to upload)
+          await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
+
+          const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
+            folder: "courses",
+          });
+
+          data.thumbnail = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+          };
+        }
       }
 
-      const course = await courseModel.findByIdAndUpdate(
+      // Update course with new data
+      const updatedCourse = await courseModel.findByIdAndUpdate(
         courseId,
         { $set: data },
         { new: true }
       );
 
-      res.status(201).json({
+      if (!updatedCourse) {
+        return next(new ErrorHandler("Failed to update course", 400));
+      }
+
+      res.status(200).json({
         success: true,
-        course: course,
+        course: updatedCourse,
       });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
