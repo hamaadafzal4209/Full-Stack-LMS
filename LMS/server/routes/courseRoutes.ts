@@ -1,7 +1,7 @@
 import express from "express";
 import { updateAccessToken } from "../controllers/userController";
 import { authorizeRole, isAuthenticated } from "../middlewares/auth";
-import { editCourse, getSingleCourse, uploadCourse } from "../controllers/courseController";
+import { editCourse, getAllCourses, getSingleCourse, uploadCourse } from "../controllers/courseController";
 
 const courseRouter = express.Router();
 
@@ -20,5 +20,6 @@ courseRouter.put(
   editCourse
 );
 courseRouter.get("/get-course/:id", getSingleCourse);
+courseRouter.get("/get-courses", getAllCourses);
 
 export default courseRouter;
