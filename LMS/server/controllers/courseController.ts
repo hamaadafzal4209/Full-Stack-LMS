@@ -182,7 +182,7 @@ interface IAddQuestionData {
   contentId: string;
 }
 
-export const addQuestion = catchAsyncErrors(
+export const addQuestionInCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { question, courseId, contentId } = req.body as IAddQuestionData;

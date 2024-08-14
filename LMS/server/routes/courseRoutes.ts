@@ -1,7 +1,14 @@
 import express from "express";
 import { updateAccessToken } from "../controllers/userController";
 import { authorizeRole, isAuthenticated } from "../middlewares/auth";
-import { editCourse, getAllCourses, getCourseByUser, getSingleCourse, uploadCourse } from "../controllers/courseController";
+import {
+  addQuestionInCourse,
+  editCourse,
+  getAllCourses,
+  getCourseByUser,
+  getSingleCourse,
+  uploadCourse,
+} from "../controllers/courseController";
 
 const courseRouter = express.Router();
 
@@ -22,10 +29,16 @@ courseRouter.put(
 courseRouter.get("/get-course/:id", getSingleCourse);
 courseRouter.get("/get-courses", getAllCourses);
 courseRouter.get(
-    "/get-course-content/:id",
-    updateAccessToken,
-    isAuthenticated,
-    getCourseByUser
-  );
+  "/get-course-content/:id",
+  updateAccessToken,
+  isAuthenticated,
+  getCourseByUser
+);
+courseRouter.put(
+  "/add-question",
+  updateAccessToken,
+  isAuthenticated,
+  addQuestionInCourse
+);
 
 export default courseRouter;
