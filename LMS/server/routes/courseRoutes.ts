@@ -9,6 +9,8 @@ import {
   getCourseByUser,
   getSingleCourse,
   uploadCourse,
+  addReview,
+  addReplyToReview,
 } from "../controllers/courseController";
 
 const courseRouter = express.Router();
@@ -46,6 +48,19 @@ courseRouter.put(
   updateAccessToken,
   isAuthenticated,
   addAnswerToQuestion
+);
+courseRouter.put(
+  "/add-review/:id",
+  updateAccessToken,
+  isAuthenticated,
+  addReview
+);
+courseRouter.put(
+  "/reply-review",
+  updateAccessToken,
+  isAuthenticated,
+  authorizeRole("admin"),
+  addReplyToReview
 );
 
 export default courseRouter;
