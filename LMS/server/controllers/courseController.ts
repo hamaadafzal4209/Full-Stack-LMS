@@ -218,3 +218,61 @@ export const addQuestionInCourse = catchAsyncErrors(
     }
   }
 );
+
+// Add answer to the questions list
+interface IAddAnswerData {
+  answer: string;
+  courseId: string;
+  contentId: string;
+  questionId: string;
+}
+
+export const addAnswerToQuestion = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { answer, courseId, contentId, questionId } =
+        req.body as IAddAnswerData;
+      const course = await courseModel.findById(courseId);
+
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return next(new ErrorHandler("Invalid content id", 400));
+      }
+
+      // Find course data from courses for validation of the user
+      const courseContent = course?.courseData.find((item: any) =>
+        item._id.equals(contentId)
+      );
+
+      if (!courseContent) {
+        return next(new ErrorHandler("Invalid content id", 400));
+      }
+
+      // Find question from course Data
+      const question = courseContent.questions.find((item: any) =>
+        item._id.equals(questionId)
+      );
+
+      if (!question) {
+        return next(new ErrorHandler("Invalid question id", 400));
+      }
+
+      // Create a new answer object
+      const newAnswer: any = {
+        user: req.user,
+        answer: answer,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      question.questionReplies?.push(newAnswer);
+      await course?.save();
+
+      res.status(201).json({
+        success: true,
+        course: course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);

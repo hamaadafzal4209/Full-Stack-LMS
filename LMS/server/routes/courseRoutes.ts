@@ -3,6 +3,7 @@ import { updateAccessToken } from "../controllers/userController";
 import { authorizeRole, isAuthenticated } from "../middlewares/auth";
 import {
   addQuestionInCourse,
+  addAnswerToQuestion,
   editCourse,
   getAllCourses,
   getCourseByUser,
@@ -39,6 +40,12 @@ courseRouter.put(
   updateAccessToken,
   isAuthenticated,
   addQuestionInCourse
+);
+courseRouter.put(
+  "/add-answer",
+  updateAccessToken,
+  isAuthenticated,
+  addAnswerToQuestion
 );
 
 export default courseRouter;
