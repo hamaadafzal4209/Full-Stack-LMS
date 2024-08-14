@@ -5,6 +5,7 @@ import { createCourse } from "../services/courseService";
 import ErrorHandler from "../utils/ErrorHandler";
 import courseModel from "../model/courseModel";
 import { redis } from "../utils/redis";
+import mongoose from "mongoose";
 
 export const uploadCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -125,51 +126,95 @@ export const getSingleCourse = catchAsyncErrors(
   }
 );
 
-  // Get all courses --- without purchasing
-  export const getAllCourses = catchAsyncErrors(
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const courses = await courseModel
-          .find()
-          .select(
-            "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
-          );
-
-        res.status(201).json({
-          success: true,
-          courses: courses,
-        });
-      } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400));
-      }
-    }
-  );
-
-  // get course for registered user
-export const getCourseByUser = catchAsyncErrors(
-    async (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const userCourseList = req.user?.courses;
-        const courseId = req.params.id;
-  
-        const courseExists = userCourseList?.find(
-          (course: any) => course._id.toString() === courseId
+// Get all courses --- without purchasing
+export const getAllCourses = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const courses = await courseModel
+        .find()
+        .select(
+          "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
         );
-        if (!courseExists) {
-          return next(
-            new ErrorHandler("You are not eligible for this course", 403)
-          );
-        }
-  
-        const course = await courseModel.findById(courseId);
-        const content = course?.courseData;
-  
-        res.status(200).json({
-          success: true,
-          courseData: content,
-        });
-      } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400));
-      }
+
+      res.status(201).json({
+        success: true,
+        courses: courses,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
     }
-  );
+  }
+);
+
+// get course for registered user
+export const getCourseByUser = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userCourseList = req.user?.courses;
+      const courseId = req.params.id;
+
+      const courseExists = userCourseList?.find(
+        (course: any) => course._id.toString() === courseId
+      );
+      if (!courseExists) {
+        return next(
+          new ErrorHandler("You are not eligible for this course", 403)
+        );
+      }
+
+      const course = await courseModel.findById(courseId);
+      const content = course?.courseData;
+
+      res.status(200).json({
+        success: true,
+        courseData: content,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+// add question
+interface IAddQuestionData {
+  question: string;
+  courseId: string;
+  contentId: string;
+}
+
+export const addQuestion = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { question, courseId, contentId } = req.body as IAddQuestionData;
+      const course = await courseModel.findById(courseId);
+      if (!mongoose.Types.ObjectId.isValid(contentId)) {
+        return next(new ErrorHandler("Invalid content id", 400));
+      }
+
+      const courseContent = course?.courseData.find((item: any) =>
+        item._id.equals(contentId)
+      );
+      if (!courseContent) {
+        return next(new ErrorHandler("Invalid content id", 400));
+      }
+
+      // Create a new question object
+      const newQuestion: any = {
+        user: req.user,
+        question: question,
+        questionReplies: [],
+      };
+
+      courseContent.questions.push(newQuestion);
+
+      await course?.save();
+
+      res.status(200).json({
+        succeed: true,
+        course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
