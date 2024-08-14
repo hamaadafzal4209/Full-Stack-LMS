@@ -6,6 +6,9 @@ import ErrorHandler from "../utils/ErrorHandler";
 import courseModel from "../model/courseModel";
 import { redis } from "../utils/redis";
 import mongoose from "mongoose";
+import sendMail from "../utils/sendMail";
+import path from "path";
+import ejs from 'ejs'
 
 export const uploadCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -266,6 +269,31 @@ export const addAnswerToQuestion = catchAsyncErrors(
 
       question.questionReplies?.push(newAnswer);
       await course?.save();
+
+      if (req.user?._id === question.user?.id) {
+        // create new notification object
+      } else {
+        const data = {
+          name: question.user.name,
+          title: courseContent.title,
+        };
+
+        const html = await ejs.renderFile(
+          path.join(__dirname, "../mails/questionReply.ejs"),
+          data
+        );
+
+        try {
+          await sendMail({
+            email: question.user.email,
+            subject: "Question Reply",
+            template: "questionReply.ejs",
+            data,
+          });
+        } catch (error: any) {
+          return next(new ErrorHandler(error.message, 400));
+        }
+      }
 
       res.status(201).json({
         success: true,
