@@ -304,3 +304,62 @@ export const addAnswerToQuestion = catchAsyncErrors(
     }
   }
 );
+
+// Add review in course
+interface IAddReviewData {
+  courseId: string;
+  review: string;
+  rating: number;
+  userId: string;
+}
+
+export const addReview = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userCourseList = req.user?.courses;
+      const courseId = req.params.id;
+
+      const courseExists = userCourseList?.find(
+        (course: any) => course._id.toString() === courseId
+      );
+      if (!courseExists) {
+        return next(
+          new ErrorHandler("You are not eligible for this course", 403)
+        );
+      }
+
+      const course = await courseModel.findById(courseId);
+      const { review, rating } = req.body as IAddReviewData;
+
+      const newReview: any = {
+        user: req.user,
+        comment: review,
+        rating: rating,
+      };
+
+      course?.reviews.push(newReview);
+      let avg = 0;
+
+      course?.reviews.forEach((review: any) => {
+        avg += review.rating;
+      });
+
+      if (course) {
+        course.ratings = avg / course.reviews.length;
+      }
+
+      await course?.save();
+
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
+
+      res.status(200).json({
+        success: true,
+        course: course,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+
