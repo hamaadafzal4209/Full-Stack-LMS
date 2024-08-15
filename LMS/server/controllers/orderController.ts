@@ -8,7 +8,7 @@ import path from "path";
 import ejs from 'ejs';
 import userModel from "../model/userModel";
 import courseModel, { ICourse } from "../model/courseModel";
-import { newOrder } from "../services/orderService";
+import { getAllOrdersService, newOrder } from "../services/orderService";
 import stripe from 'stripe';
 import notificationModel from "../model/notificationModel";
 
@@ -99,3 +99,14 @@ export const createOrder = catchAsyncErrors(async(req:Request,res:Response,next:
         return next(new ErrorHandler(error.message,400))
     }
 })
+
+// get all orders --- admin
+export const getAllOrdersByAdmin = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllOrdersService(res);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
