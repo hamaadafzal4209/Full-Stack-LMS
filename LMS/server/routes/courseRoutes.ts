@@ -11,6 +11,7 @@ import {
   uploadCourse,
   addReview,
   addReplyToReview,
+  getAllCoursesByAdmin,
 } from "../controllers/courseController";
 
 const courseRouter = express.Router();
@@ -61,6 +62,13 @@ courseRouter.put(
   isAuthenticated,
   authorizeRole("admin"),
   addReplyToReview
+);
+courseRouter.get(
+  "/get-all-courses",
+  updateAccessToken,
+  isAuthenticated,
+  authorizeRole("admin"),
+  getAllCoursesByAdmin
 );
 
 export default courseRouter;
