@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import sendMail from "../utils/sendMail";
 import path from "path";
 import ejs from 'ejs'
+import notificationModel from "../model/notificationModel";
 
 export const uploadCourse = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -208,6 +209,12 @@ export const addQuestionInCourse = catchAsyncErrors(
         questionReplies: [],
       };
 
+      await notificationModel.create({
+        user: req.user?._id,
+        title: "New question",
+        message: `You have a new question in ${courseContent.title}`,
+      });
+
       courseContent.questions.push(newQuestion);
 
       await course?.save();
@@ -352,6 +359,13 @@ export const addReview = catchAsyncErrors(
 
       await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
 
+       // Create new Notification
+       await notificationModel.create({
+        user: req.user?._id,
+        title: "New Review Received",
+        message: `${req.user?.name} has given a new review for ${course?.name}`,
+      });
+      
       res.status(200).json({
         success: true,
         course: course,
