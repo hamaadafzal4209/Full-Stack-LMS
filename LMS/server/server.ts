@@ -6,6 +6,7 @@ import userRouter from "./routes/userRoutes";
 import { v2 as cloudinary } from "cloudinary";
 import courseRouter from "./routes/courseRoutes";
 import orderRouter from "./routes/orderRoutes";
+import notificationRouter from "./routes/notificationRoute";
 require("dotenv").config();
 
 const app = express();
@@ -41,6 +42,7 @@ app.use((req, res, next) => {
 app.use("/api/v1/", userRouter);
 app.use("/api/v1/", courseRouter);
 app.use("/api/v1/", orderRouter);
+app.use("/api/v1/", notificationRouter);
 
 // Test API route
 app.post("/test", (req: Request, res: Response, next: NextFunction) => {
