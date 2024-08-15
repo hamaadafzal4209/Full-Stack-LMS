@@ -21,5 +21,26 @@ export const getAllNotifications = catchAsyncErrors(
   }
 );
 
+// Update notifications status
+export const updateNotificationStatus = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const notification = await notificationModel.findByIdAndUpdate(
+        req.params.id,
+        {
+          status: "read",
+        },
+        { new: true }
+      );
+
+      res.status(200).json({
+        success: true,
+        notification,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
 
 
