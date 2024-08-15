@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors";
-import orderModel from "../model/orderModel";
+import orderModel, {IOrder} from "../model/orderModel";
 import ErrorHandler from "../utils/ErrorHandler";
 import { redis } from "../utils/redis";
 import sendMail from "../utils/sendMail";
@@ -9,6 +9,8 @@ import ejs from 'ejs';
 import userModel from "../model/userModel";
 import courseModel, { ICourse } from "../model/courseModel";
 import { newOrder } from "../services/orderService";
+import stripe from 'stripe';
+import notificationModel from "../model/notificationModel";
 
 export const createOrder = catchAsyncErrors(async(req:Request,res:Response,next:NextFunction) => {
     try {
@@ -82,6 +84,12 @@ export const createOrder = catchAsyncErrors(async(req:Request,res:Response,next:
         await redis.set(req.user?._id, JSON.stringify(user));
         await user?.save();
   
+        await notificationModel.create({
+          user: user?._id,
+          title: "New Order",
+          message: `You have a new order for ${course.name}`,
+        });
+        
         course.purchased += 1;
   
         await course.save();
