@@ -1,5 +1,5 @@
 import express from "express";
-import { createLayout, updateLayout } from "../controllers/layoutController";
+import { createLayout, getLayoutByType, updateLayout } from "../controllers/layoutController";
 import { authorizeRole, isAuthenticated } from "../middlewares/auth";
 import { updateAccessToken } from "../controllers/userController";
 
@@ -19,6 +19,6 @@ layoutRouter.put(
   authorizeRole("admin"),
   updateLayout
 );
-// layoutRouter.get("/get-layout/:type", getLayoutByType);
+layoutRouter.get("/get-layout/:type", getLayoutByType);
 
 export default layoutRouter;
