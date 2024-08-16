@@ -8,7 +8,7 @@ import { redis } from "../utils/redis";
 import mongoose from "mongoose";
 import sendMail from "../utils/sendMail";
 import path from "path";
-import ejs from 'ejs'
+import ejs from "ejs";
 import notificationModel from "../model/notificationModel";
 
 export const uploadCourse = catchAsyncErrors(
@@ -364,13 +364,13 @@ export const addReview = catchAsyncErrors(
 
       await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
 
-       // Create new Notification
-       await notificationModel.create({
+      // Create new Notification
+      await notificationModel.create({
         user: req.user?._id,
         title: "New Review Received",
         message: `${req.user?.name} has given a new review for ${course?.name}`,
       });
-      
+
       res.status(200).json({
         success: true,
         course: course,

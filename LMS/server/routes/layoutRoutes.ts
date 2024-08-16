@@ -1,5 +1,9 @@
 import express from "express";
-import { createLayout, getLayoutByType, updateLayout } from "../controllers/layoutController";
+import {
+  createLayout,
+  getLayoutByType,
+  updateLayout,
+} from "../controllers/layoutController";
 import { authorizeRole, isAuthenticated } from "../middlewares/auth";
 import { updateAccessToken } from "../controllers/userController";
 

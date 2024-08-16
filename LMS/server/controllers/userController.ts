@@ -13,7 +13,11 @@ import {
   sendToken,
 } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { getAllUsersService, getUserById, updateUserRoleService } from "../services/userServices";
+import {
+  getAllUsersService,
+  getUserById,
+  updateUserRoleService,
+} from "../services/userServices";
 import cloudinary from "cloudinary";
 
 interface IRegistrationBody {
@@ -447,14 +451,13 @@ export const updateUserRole = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, role } = req.body;
-      const user = await userModel.findOne({email});
+      const user = await userModel.findOne({ email });
       if (user) {
-        const id = user._id
+        const id = user._id;
         updateUserRoleService(id, role, res, next);
       } else {
         return next(new ErrorHandler("User not found", 400));
       }
-
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
