@@ -9,6 +9,11 @@ export const createLayout = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { type } = req.body;
+
+      if (!type) {
+        return next(new ErrorHandler("Type is required", 400));
+      }
+
       const isTypeExist = await layoutModel.findOne({ type });
       if (isTypeExist) {
         return next(new ErrorHandler(`Layout ${type} already exists`, 400));
@@ -16,6 +21,11 @@ export const createLayout = catchAsyncErrors(
 
       if (type === "Banner") {
         const { image, title, subtitle } = req.body;
+
+        if (!image || !title || !subtitle) {
+          return next(new ErrorHandler("Image, title, and subtitle are required for Banner", 400));
+        }
+
         const result = await cloudinary.v2.uploader.upload(image, {
           folder: "layout",
         });
@@ -33,10 +43,13 @@ export const createLayout = catchAsyncErrors(
         };
 
         await layoutModel.create(banner);
-      }
-
-      if (type === "FAQ") {
+      } else if (type === "FAQ") {
         const { faq } = req.body;
+
+        if (!faq || !Array.isArray(faq)) {
+          return next(new ErrorHandler("FAQ must be an array", 400));
+        }
+
         const faqItems = await Promise.all(
           faq.map(async (item: any) => {
             return {
@@ -47,10 +60,13 @@ export const createLayout = catchAsyncErrors(
         );
 
         await layoutModel.create({ type: "FAQ", faq: faqItems });
-      }
-
-      if (type === "Categories") {
+      } else if (type === "Categories") {
         const { categories } = req.body;
+
+        if (!categories || !Array.isArray(categories)) {
+          return next(new ErrorHandler("Categories must be an array", 400));
+        }
+
         const categoriesItems = await Promise.all(
           categories.map(async (item: any) => {
             return {
@@ -63,6 +79,8 @@ export const createLayout = catchAsyncErrors(
           type: "Categories",
           categories: categoriesItems,
         });
+      } else {
+        return next(new ErrorHandler("Invalid type provided", 400));
       }
 
       res.status(200).json({
