@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
 import React, { FC, useState, useEffect } from "react";
-import NavItems from "../utils/NavItems";
-import { ThemeSwitcher } from "../utils/ThemeSwitcher";
+import NavItems from "../../utils/NavItems";
+import { ThemeSwitcher } from "../../utils/ThemeSwitcher";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
 
 type Props = {
+  open: Boolean;
+  setOpen: (open: boolean) => void;
   activeItem: number;
 };
 

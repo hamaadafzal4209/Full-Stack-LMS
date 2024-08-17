@@ -1,7 +1,7 @@
 "use client";
 import React, { FC, useState } from "react";
 import Heading from "./utils/Headings";
-import Header from "./components/Header";
+import Header from "./components/Layouts/Header";
 
 interface Props {}
 
