@@ -41,6 +41,10 @@ input::-webkit-inner-spin-button {
   background: #32ae7e;
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 input[type="number"] {
   --moz-appearance: textfield;
 }

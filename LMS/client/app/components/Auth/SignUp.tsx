@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { FC, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -23,14 +23,15 @@ const schema = Yup.object().shape({
   password: Yup.string().required("Please enter your password").min(6),
 });
 
-const SignUp: FC<Props> = ({ setRoute, setOpen }) => {
+const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
   const [show, setShow] = useState(false);
 
   const formik = useFormik({
     initialValues: { name: "", email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ name, email, password }) => {
-      console.log(name, email, password);
+      // console.log(name, email, password);
+      setRoute("Verification");
     },
   });
 
@@ -112,7 +113,7 @@ const SignUp: FC<Props> = ({ setRoute, setOpen }) => {
             <span className="text-red-500 pt-2 block">{errors.password}</span>
           )}
         </div>
-        
+
         <div className="w-full mt-5">
           <input type="submit" value="Sign Up" className={`${styles.button}`} />
         </div>
@@ -122,14 +123,14 @@ const SignUp: FC<Props> = ({ setRoute, setOpen }) => {
           Or join with
         </h5>
         <div className="grid grid-cols-2 my-3 gap-2">
-          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
+          <div className="flex items-center justify-center cursor-pointer py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
             <FcGoogle size={30} className="cursor-pointer" />
           </div>
-          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
+          <div className="flex items-center justify-center cursor-pointer py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
             <AiFillGithub size={30} className="cursor-pointer" />
           </div>
         </div>
-        
+
         <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
           {"Already have an account?"}{" "}
           <span

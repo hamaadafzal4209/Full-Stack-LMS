@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { FC, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -29,7 +29,10 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
     initialValues: { email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
-      console.log(email, password);
+      // Ensure setRoute is defined before calling it
+      if (setRoute) {
+        setRoute("Sign-Up");
+      }
     },
   });
 
@@ -52,8 +55,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             placeholder="loginmail@gmail.com"
             className={`${errors.email && touched.email && "border-red-500"} ${
               styles.input
-            }
-        `}
+            }`}
           />
           {errors.email && touched.email && (
             <span className="text-red-500 pt-2 block">{errors.email}</span>
@@ -73,8 +75,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             placeholder="password@#!&"
             className={`${
               errors.password && touched.password && "border-red-500"
-            } ${styles.input}
-        `}
+            } ${styles.input}`}
           />
           {!show ? (
             <AiOutlineEyeInvisible
