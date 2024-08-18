@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme.provider";

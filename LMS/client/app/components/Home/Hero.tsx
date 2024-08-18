@@ -15,7 +15,7 @@ const Hero: FC<Props> = () => {
     <div className="min-h-screen w-full px-[5%] py-10 flex items-center justify-between gap-6 flex-col lg:flex-row">
       {/* Left Section */}
       <div className="w-11/12 lg:w-1/2 flex items-center justify-center">
-        <div className="relative w-full max-w-[500px] aspect-square">
+        <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[500px] aspect-square">
           <div className="absolute inset-0 rounded-full hero_animation"></div>
           <Image
             src={heroBanner}
