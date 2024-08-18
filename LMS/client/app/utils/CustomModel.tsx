@@ -1,4 +1,4 @@
-import { Box, Modal, Typography } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import React, { FC } from "react";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
   setRoute?: (route: string) => void;
 };
 
-const CustomModel: FC<Props> = ({
+const CustomModal: FC<Props> = ({
   open,
   setOpen,
   component: Component,
@@ -18,20 +18,23 @@ const CustomModel: FC<Props> = ({
 }) => {
   return (
     <>
-      <Modal 
-      className="p-4"
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 max-w-[450px] w-full bg-white dark:bg-slate-900 rounded-md shadow p-4 outline-none"
+      <div className="p-4 min-h-screen">
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          className="flex items-center justify-center p-4"
         >
-          <Component setOpen={setOpen} setRoute={setRoute} />
-        </Box>
-      </Modal>
+          <Box
+            className="relative max-w-[450px] w-full bg-white dark:bg-slate-900 rounded-md shadow p-4 outline-none overflow-y-auto no-scrollbar max-h-[90vh]"
+          >
+            <Component setOpen={setOpen} setRoute={setRoute} />
+          </Box>
+        </Modal>
+      </div>
     </>
   );
 };
 
-export default CustomModel;
+export default CustomModal;

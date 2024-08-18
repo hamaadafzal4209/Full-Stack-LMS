@@ -16,30 +16,51 @@ type Props = {
 };
 
 const schema = Yup.object().shape({
+  name: Yup.string().required("Please enter your name"),
   email: Yup.string()
     .email("Please enter a valid email address")
     .required("Please enter your email"),
   password: Yup.string().required("Please enter your password").min(6),
 });
 
-const Login: FC<Props> = ({ setRoute, setOpen }) => {
+const SignUp: FC<Props> = ({ setRoute, setOpen }) => {
   const [show, setShow] = useState(false);
 
   const formik = useFormik({
-    initialValues: { email: "", password: "" },
+    initialValues: { name: "", email: "", password: "" },
     validationSchema: schema,
-    onSubmit: async ({ email, password }) => {
-      console.log(email, password);
+    onSubmit: async ({ name, email, password }) => {
+      console.log(name, email, password);
     },
   });
 
   const { errors, values, touched, handleChange, handleSubmit } = formik;
 
   return (
-    <div className="w-full px-2">
-      <h1 className={`${styles.title}`}>Login with Elearning</h1>
+    <div className="w-full px-2 h-auto">
+      <h1 className={`${styles.title}`}>Sign Up with Elearning</h1>
       <form onSubmit={handleSubmit}>
         <div className="w-full mt-5 relative mb-1">
+          <label className={`${styles.label}`} htmlFor="name">
+            Enter your name
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={values.name}
+            onChange={handleChange}
+            id="name"
+            placeholder="Your name"
+            className={`${errors.name && touched.name && "border-red-500"} ${
+              styles.input
+            }`}
+          />
+          {errors.name && touched.name && (
+            <span className="text-red-500 pt-2 block">{errors.name}</span>
+          )}
+        </div>
+
+        <div className="w-full mt-4 relative mb-1">
           <label className={`${styles.label}`} htmlFor="email">
             Enter your email address
           </label>
@@ -52,8 +73,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             placeholder="loginmail@gmail.com"
             className={`${errors.email && touched.email && "border-red-500"} ${
               styles.input
-            }
-        `}
+            }`}
           />
           {errors.email && touched.email && (
             <span className="text-red-500 pt-2 block">{errors.email}</span>
@@ -73,8 +93,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             placeholder="password@#!&"
             className={`${
               errors.password && touched.password && "border-red-500"
-            } ${styles.input}
-        `}
+            } ${styles.input}`}
           />
           {!show ? (
             <AiOutlineEyeInvisible
@@ -93,9 +112,11 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             <span className="text-red-500 pt-2 block">{errors.password}</span>
           )}
         </div>
+        
         <div className="w-full mt-5">
-          <input type="submit" value="Login" className={`${styles.button}`} />
+          <input type="submit" value="Sign Up" className={`${styles.button}`} />
         </div>
+
         <br />
         <h5 className="text-center font-Poppins text-[14px] text-black dark:text-white">
           Or join with
@@ -108,13 +129,14 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             <AiFillGithub size={30} className="cursor-pointer" />
           </div>
         </div>
+        
         <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
-          {"Don't have an account?"}{" "}
+          {"Already have an account?"}{" "}
           <span
             className="dark:text-[#2190ff] pl-1 cursor-pointer underline text-blue-700"
-            onClick={() => setRoute && setRoute("Sign-Up")}
+            onClick={() => setRoute && setRoute("Login")}
           >
-            Sign up
+            Login
           </span>
         </h5>
       </form>
@@ -122,4 +144,4 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
   );
 };
 
-export default Login;
+export default SignUp;
