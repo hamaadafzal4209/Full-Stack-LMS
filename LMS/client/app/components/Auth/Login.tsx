@@ -112,7 +112,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
         <h5 className="text-center pt-4 font-Poppins text-[14px] dark:text-white text-black">
           {"Don't have an account?"}{" "}
           <span
-            className="dark:text-[#2190ff] pl-1 cursor-pointer underline text-blue-700"
+            className="dark:text-[#2190ff] pl-1 cursor-pointer hover:underline text-blue-700"
             onClick={() => setRoute && setRoute("Sign-Up")}
           >
             Sign up
