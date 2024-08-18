@@ -3,6 +3,8 @@ import React, { FC, useState } from "react";
 import Heading from "./utils/Headings";
 import Header from "./components/Layouts/Header";
 import Hero from "./components/Home/Hero";
+import CustomModel from "./utils/CustomModel";
+import Login from "./components/Auth/Login";
 
 interface Props {}
 
@@ -26,6 +28,12 @@ const Home: FC<Props> = (props) => {
         setRoute={setRoute}
       />
       <Hero />
+      <CustomModel  open={open}
+          setOpen={setOpen}
+          route={route}
+          setRoute={setRoute}
+          activeItem={activeItem}
+          component={Login} />
     </div>
   );
 };

@@ -37,7 +37,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
 
   return (
     <>
-      {/* top header --- navbar */}
+      {/* Top header --- Navbar */}
       <div
         className={`${
           active
@@ -65,6 +65,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
             <FaRegUserCircle
               size={25}
               className="text-black dark:text-white cursor-pointer"
+              onClick={() => setOpen(true)}
             />
           </div>
         </div>
@@ -76,21 +77,17 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
           />
         )}
       </div>
-      {/* form popup */}
-      {route === "Sign-Up" && <></>}
-      {route === "Login" && (
-        <>
-          {open && (
-            <CustomModel
-              open={open}
-              setOpen={setOpen}
-              route={route}
-              setRoute={setRoute}
-              activeItem={activeItem}
-              component={Login}
-            />
-          )}
-        </>
+
+      {/* Form popup */}
+      {route === "Login" && open && (
+        <CustomModel
+          open={open}
+          setOpen={setOpen}
+          route={route}
+          setRoute={setRoute}
+          activeItem={activeItem}
+          component={Login}
+        />
       )}
     </>
   );
