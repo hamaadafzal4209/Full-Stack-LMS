@@ -6,11 +6,24 @@ type RegistrationResponse = {
   activationToken: string;
 };
 
-type RegistrationData = {};
+type RegistrationData = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+type ActivationResponse = {
+  success: boolean;
+  message: string;
+};
+
+type ActivationData = {
+  activation_token: string;
+  activation_code: string;
+};
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // register endpoint
     register: builder.mutation<RegistrationResponse, RegistrationData>({
       query: (data) => ({
         url: "registration",
@@ -32,8 +45,7 @@ export const authApi = apiSlice.injectEndpoints({
       },
     }),
 
-    // activation endpoint
-    activation: builder.mutation({
+    activation: builder.mutation<ActivationResponse, ActivationData>({
       query: ({ activation_token, activation_code }) => ({
         url: "activate-user",
         method: "POST",
