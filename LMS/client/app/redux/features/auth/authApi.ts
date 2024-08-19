@@ -32,7 +32,7 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        try {
+        try { 
           const result = await queryFulfilled;
           dispatch(
             userRegistration({
