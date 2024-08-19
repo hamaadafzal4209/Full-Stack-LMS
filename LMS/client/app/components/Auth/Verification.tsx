@@ -31,6 +31,7 @@ const Verification: FC<Props> = ({ setRoute = () => {} }) => {
 
   const verifyHandler = async () => {
     console.log("Verification handler triggered");
+    setInvalidError(true);
   };
 
   const handleInputChange = (index: number, value: string) => {
