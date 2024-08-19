@@ -5,9 +5,10 @@ import NavItems from "../../utils/NavItems";
 import { ThemeSwitcher } from "../../utils/ThemeSwitcher";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
-import CustomModel from "@/app/utils/CustomModel";
+import CustomModal from "@/app/utils/CustomModal";
 import Login from "../Auth/Login";
 import SignUp from "../Auth/SignUp";
+import Verification from "../Auth/Verification";
 
 type Props = {
   open: boolean;
@@ -35,6 +36,12 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleUserIconClick = () => {
+    console.log("User icon clicked");
+    setOpen(true);
+    setRoute("Login"); // Default to "Login", adjust as necessary
+  };
 
   return (
     <>
@@ -66,7 +73,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
             <FaRegUserCircle
               size={25}
               className="text-black dark:text-white cursor-pointer"
-              onClick={() => setOpen(true)}
+              onClick={handleUserIconClick}
             />
           </div>
         </div>
@@ -81,7 +88,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
 
       {/* Form popup */}
       {route === "Login" && open && (
-        <CustomModel
+        <CustomModal
           open={open}
           setOpen={setOpen}
           route={route}
@@ -91,13 +98,23 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
         />
       )}
       {route === "Sign-Up" && open && (
-        <CustomModel
+        <CustomModal
           open={open}
           setOpen={setOpen}
           route={route}
           setRoute={setRoute}
           activeItem={activeItem}
           component={SignUp}
+        />
+      )}
+      {route === "Verification" && open && (
+        <CustomModal
+          open={open}
+          setOpen={setOpen}
+          route={route}
+          setRoute={setRoute}
+          activeItem={activeItem}
+          component={Verification}
         />
       )}
     </>
