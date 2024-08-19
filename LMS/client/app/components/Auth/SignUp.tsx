@@ -27,18 +27,21 @@ const schema = Yup.object().shape({
 
 const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [register, { isSuccess, error, data }] = useRegisterMutation();
 
   useEffect(() => {
     if (isSuccess) {
-      const message = data?.message || "Registration successfull!";
+      setLoading(false);
+      const message = data?.message || "Registration successful!";
       toast.success(message);
       setRoute("Verification");
     }
     if (error) {
+      setLoading(false);
       if ("data" in error) {
         const errorData = error as any;
-        toast.error(errorData.data?.message || "An error occured");
+        toast.error(errorData.data?.message || "An error occurred");
       }
     }
   }, [isSuccess, error, data?.message, setRoute]);
@@ -47,12 +50,8 @@ const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
     initialValues: { name: "", email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ name, email, password }) => {
-      const data = {
-        name,
-        email,
-        password,
-      };
-      await register(data);
+      setLoading(true);
+      await register({ name, email, password });
     },
   });
 
@@ -136,7 +135,38 @@ const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
         </div>
 
         <div className="w-full mt-5">
-          <input type="submit" value="Sign Up" className={`${styles.button}`} />
+          <button
+            type="submit"
+            className={`${styles.button} ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
+          >
+            {loading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            ) : (
+              "Sign Up"
+            )}
+          </button>
         </div>
 
         <br />
