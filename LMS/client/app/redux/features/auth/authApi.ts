@@ -6,12 +6,7 @@ type RegistrationResponse = {
   activationToken: string;
 };
 
-type RegistrationData = {
-  // Define the expected structure of the registration data
-  username: string;
-  email: string;
-  password: string;
-};
+type RegistrationData = {};
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
