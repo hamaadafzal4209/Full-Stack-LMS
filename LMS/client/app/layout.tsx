@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme.provider";
+import { Toaster } from "react-hot-toast";
+("react-hot-toast");
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,6 +28,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
