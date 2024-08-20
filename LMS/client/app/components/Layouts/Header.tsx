@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import React, { FC, useState, useEffect } from "react";
 import NavItems from "../../utils/NavItems";
@@ -30,27 +31,34 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   const [isClient, setIsClient] = useState(false);
 
   const { data } = useSession();
-
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+
+  // Social Authentication Handler
+  const handleSocialAuth = async () => {
+    if (data) {
+      await socialAuth({
+        email: data?.user?.email,
+        name: data?.user?.name,
+        avatar: data?.user?.image,
+      });
+    }
+  };
 
   useEffect(() => {
     if (!user) {
-      if (data) {
-        socialAuth({
-          email: data?.user?.email,
-          name: data?.user?.name,
-          avatar: data?.user?.image,
-        });
-      }
-      if (isSuccess) {
-        toast.success("Login successful");
-      }
-      if (error && "data" in error) {
-        const errorData = error as { data: { message: string } };
-        toast.error(errorData.data?.message || "An error occurred");
-      }
+      handleSocialAuth();
     }
-  }, [data, socialAuth, user, error, isSuccess]);
+  }, [data, user, socialAuth]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successful");
+    }
+    if (error && "data" in error) {
+      const errorMessage = (error as any)?.data?.message || "An error occurred";
+      toast.error(errorMessage);
+    }
+  }, [isSuccess, error]);
 
   useEffect(() => {
     setIsClient(true);
