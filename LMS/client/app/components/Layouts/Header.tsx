@@ -11,6 +11,7 @@ import Verification from "../Auth/Verification";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import avatar from "../../../public/assets/Profile.png";
+import { useSession } from "next-auth/react";
 
 type Props = {
   open: boolean;
@@ -25,6 +26,10 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const { user } = useSelector((state: any) => state.auth);
   const [isClient, setIsClient] = useState(false);
+
+  const {data} = useSession();
+
+  console.log(data);
 
   useEffect(() => {
     setIsClient(true);
@@ -76,7 +81,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
               onClick={() => setOpenSidebar(!openSidebar)}
             />
             {isClient && user ? (
-              <Link href="">
+              <Link href="/profile">
                 <Image
                   src={user.avatar || avatar.src}
                   alt="avatar"

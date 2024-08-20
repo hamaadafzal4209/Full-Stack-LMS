@@ -11,6 +11,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { useLoginMutation } from "../../redux/features/auth/authApi";
 import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 type Props = {
   setOpen: (open: boolean) => void;
@@ -113,10 +114,10 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
           Or join with
         </h5>
         <div className="grid grid-cols-2 my-3 gap-2">
-          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
+          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white" onClick={() => signIn("google")}>
             <FcGoogle size={30} className="cursor-pointer" />
           </div>
-          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white">
+          <div className="flex items-center justify-center py-2 dark:bg-gray-100 rounded-md border-2 border-black dark:border-white" onClick={() => signIn("github")}>
             <AiFillGithub size={30} className="cursor-pointer" />
           </div>
         </div>
