@@ -1,12 +1,12 @@
-"use client";
-import { ScatterBoxLoader } from "react-awesome-loaders";
-export const Loader = () => {
+import "./Loader.css";
+type Props = {};
+
+const Loader = (props: Props) => {
   return (
-    <>
-      <ScatterBoxLoader
-        primaryColor={"#6366F1"}
-      />
-    </>
+    <div className="flex items-center justify-center h-screen">
+      <div className="loader"></div>
+    </div>
   );
 };
 
+export default Loader;
