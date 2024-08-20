@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
-import { userRegistration } from "./authSlice";
+import { userLoggedIn, userRegistration } from "./authSlice";
 
 type RegistrationResponse = {
   message: string;
@@ -24,6 +24,7 @@ type ActivationData = {
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Registration endpoint
     register: builder.mutation<RegistrationResponse, RegistrationData>({
       query: (data) => ({
         url: "registration",
@@ -32,7 +33,7 @@ export const authApi = apiSlice.injectEndpoints({
         credentials: "include",
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        try { 
+        try {
           const result = await queryFulfilled;
           dispatch(
             userRegistration({
@@ -45,6 +46,7 @@ export const authApi = apiSlice.injectEndpoints({
       },
     }),
 
+    // Activation endpoint
     activation: builder.mutation<ActivationResponse, ActivationData>({
       query: ({ activation_token, activation_code }) => ({
         url: "activate-user",
@@ -55,7 +57,37 @@ export const authApi = apiSlice.injectEndpoints({
         },
       }),
     }),
+
+    // Login endpoint
+    login: builder.mutation<
+      { accessToken: string; user: any },
+      { email: string; password: string }
+    >({
+      query: ({ email, password }) => ({
+        url: "login",
+        method: "POST",
+        body: {
+          email,
+          password,
+        },
+        credentials: "include",
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(
+            userLoggedIn({
+              accessToken: result.data.accessToken,
+              user: result.data.user,
+            })
+          );
+        } catch (error: any) {
+          console.error("Login failed:", error);
+        }
+      },
+    }),
   }),
 });
 
-export const { useRegisterMutation, useActivationMutation } = authApi;
+export const { useRegisterMutation, useActivationMutation, useLoginMutation } =
+  authApi;

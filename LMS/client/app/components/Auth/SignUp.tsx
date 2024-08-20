@@ -9,7 +9,7 @@ import {
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { useRegisterMutation } from "@/app/redux/features/auth/authApi";
+import { useRegisterMutation } from "../../redux/features/auth/authApi";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -77,7 +77,7 @@ const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
             }`}
           />
           {errors.name && touched.name && (
-            <span className="text-red-500 pt-2 block">{errors.name}</span>
+            <span className="text-red-500 pt-0.5 block">{errors.name}</span>
           )}
         </div>
 
@@ -97,7 +97,7 @@ const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
             }`}
           />
           {errors.email && touched.email && (
-            <span className="text-red-500 pt-2 block">{errors.email}</span>
+            <span className="text-red-500 pt-0.5 block">{errors.email}</span>
           )}
         </div>
 
@@ -130,7 +130,7 @@ const SignUp: FC<Props> = ({ setRoute = () => {}, setOpen }) => {
             />
           )}
           {errors.password && touched.password && (
-            <span className="text-red-500 pt-2 block">{errors.password}</span>
+            <span className="text-red-500 pt-0.5 block">{errors.password}</span>
           )}
         </div>
 

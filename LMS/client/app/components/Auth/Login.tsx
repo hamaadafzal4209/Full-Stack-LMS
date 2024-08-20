@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styles } from "../../../app/styles/style";
@@ -9,6 +9,8 @@ import {
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { useLoginMutation } from "../../redux/features/auth/authApi";
+import toast from "react-hot-toast";
 
 type Props = {
   setOpen: (open: boolean) => void;
@@ -24,17 +26,26 @@ const schema = Yup.object().shape({
 
 const Login: FC<Props> = ({ setRoute, setOpen }) => {
   const [show, setShow] = useState(false);
+  const [login, { isSuccess, error }] = useLoginMutation();
 
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: schema,
     onSubmit: async ({ email, password }) => {
-      // Ensure setRoute is defined before calling it
-      if (setRoute) {
-        setRoute("Sign-Up");
-      }
+      await login({ email, password });
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Login successful");
+      setOpen(false);
+    }
+    if (error && "data" in error) {
+      const errorData = error as { data: { message: string } };
+      toast.error(errorData.data?.message || "An error occurred");
+    }
+  }, [isSuccess, error, setOpen]);
 
   const { errors, values, touched, handleChange, handleSubmit } = formik;
 
@@ -58,7 +69,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             }`}
           />
           {errors.email && touched.email && (
-            <span className="text-red-500 pt-2 block">{errors.email}</span>
+            <span className="text-red-500 pt-0.5 block">{errors.email}</span>
           )}
         </div>
 
@@ -91,7 +102,7 @@ const Login: FC<Props> = ({ setRoute, setOpen }) => {
             />
           )}
           {errors.password && touched.password && (
-            <span className="text-red-500 pt-2 block">{errors.password}</span>
+            <span className="text-red-500 pt-0.5 block">{errors.password}</span>
           )}
         </div>
         <div className="w-full mt-5">
