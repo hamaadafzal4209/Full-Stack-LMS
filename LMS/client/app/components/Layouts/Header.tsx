@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import React, { FC, useState, useEffect } from "react";
 import NavItems from "../../utils/NavItems";
@@ -9,6 +8,9 @@ import CustomModal from "@/app/utils/CustomModal";
 import Login from "../Auth/Login";
 import SignUp from "../Auth/SignUp";
 import Verification from "../Auth/Verification";
+import { useSelector } from "react-redux";
+import Image from "next/image";
+import avatar from "../../../public/assets/Profile.png";
 
 type Props = {
   open: boolean;
@@ -21,8 +23,12 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   const [active, setActive] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
+  const { user } = useSelector((state: any) => state.auth);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+
     const handleScroll = () => {
       if (window.scrollY > 80) {
         setActive(true);
@@ -38,7 +44,6 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   }, []);
 
   const handleUserIconClick = () => {
-    console.log("User icon clicked");
     setOpen(true);
     setRoute("Login"); // Default to "Login", adjust as necessary
   };
@@ -70,11 +75,23 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
               className="block text-black dark:text-white md:hidden cursor-pointer"
               onClick={() => setOpenSidebar(!openSidebar)}
             />
-            <FaRegUserCircle
-              size={25}
-              className="text-black dark:text-white cursor-pointer"
-              onClick={handleUserIconClick}
-            />
+            {isClient && user ? (
+              <Link href="">
+                <Image
+                  src={user.avatar || avatar.src}
+                  alt="avatar"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
+                />
+              </Link>
+            ) : (
+              <FaRegUserCircle
+                size={25}
+                className="text-black dark:text-white cursor-pointer"
+                onClick={handleUserIconClick}
+              />
+            )}
           </div>
         </div>
         {openSidebar && (
