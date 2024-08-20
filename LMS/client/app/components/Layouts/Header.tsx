@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import avatar from "../../../public/assets/Profile.png";
 import { useSession } from "next-auth/react";
+import { useSocialAuthMutation } from "@/app/redux/features/auth/authApi";
+import toast from "react-hot-toast";
 
 type Props = {
   open: boolean;
@@ -27,13 +29,31 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   const { user } = useSelector((state: any) => state.auth);
   const [isClient, setIsClient] = useState(false);
 
-  const {data} = useSession();
+  const { data } = useSession();
 
-  console.log(data);
+  const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
+
+  useEffect(() => {
+    if (!user) {
+      if (data) {
+        socialAuth({
+          email: data?.user?.email,
+          name: data?.user?.name,
+          avatar: data?.user?.image,
+        });
+      }
+      if (isSuccess) {
+        toast.success("Login successful");
+      }
+      if (error && "data" in error) {
+        const errorData = error as { data: { message: string } };
+        toast.error(errorData.data?.message || "An error occurred");
+      }
+    }
+  }, [data, socialAuth, user, error, isSuccess]);
 
   useEffect(() => {
     setIsClient(true);
-
     const handleScroll = () => {
       if (window.scrollY > 80) {
         setActive(true);
