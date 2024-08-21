@@ -1,10 +1,14 @@
-import "./Loader.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+
 type Props = {};
 
 const Loader = (props: Props) => {
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="loader"></div>
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
     </div>
   );
 };
