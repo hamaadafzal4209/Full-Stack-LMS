@@ -1,4 +1,4 @@
-"use client"
+"use client";
 /* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
@@ -80,7 +80,7 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
         </label>
       </div>
 
-      <div className="w-full md:w-3/4 lg:w-1/2 px-4 md:px-10">
+      <div className="w-full px-4 md:px-10">
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="flex flex-col">
             <label

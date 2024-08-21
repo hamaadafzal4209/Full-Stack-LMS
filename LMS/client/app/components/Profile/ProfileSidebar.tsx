@@ -23,7 +23,7 @@ const ProfileSidebar: FC<Props> = ({
   logoutHandler,
 }) => {
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div
         className={`w-full flex items-center px-3 py-4 gap-2 cursor-pointer ${
           active === 1 ? "dark:bg-slate-800 bg-white" : "bg-transparent"
