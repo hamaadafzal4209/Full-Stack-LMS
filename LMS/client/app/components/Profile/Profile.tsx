@@ -3,6 +3,7 @@ import React, { FC, useState, useEffect } from "react";
 import ProfileSidebar from "./ProfileSidebar";
 import { useLogoutQuery } from "@/app/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
+import ProfileInfo from "./ProfileInfo";
 
 type Props = {
   user: any;
@@ -31,7 +32,7 @@ const Profile: FC<Props> = ({ user }) => {
         setScroll(false);
       }
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -51,6 +52,7 @@ const Profile: FC<Props> = ({ user }) => {
           avatar={avatar}
         />
       </div>
+      <div className="w-full">{active === 1 && <ProfileInfo user={user} avatar={avatar} />}</div>
     </div>
   );
 };
