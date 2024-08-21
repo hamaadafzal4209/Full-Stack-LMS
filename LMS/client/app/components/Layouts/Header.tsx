@@ -11,7 +11,7 @@ import SignUp from "../Auth/SignUp";
 import Verification from "../Auth/Verification";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import avatar from "../../../public/assets/Profile.png";
+import defaultAvatar from "../../../public/assets/Profile.png";
 import { useSession } from "next-auth/react";
 import {
   useLogoutQuery,
@@ -120,11 +120,11 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
             {isClient && user ? (
               <Link href="/profile">
                 <Image
-                  src={user.avatar || avatar.src}
+                  src={user.avatar ? user.avatar.url : defaultAvatar}
                   alt="avatar"
                   width={32}
                   height={32}
-                  className="rounded-full object-cover"
+                  className="h-8 w-8 rounded-full object-cover"
                 />
               </Link>
             ) : (
