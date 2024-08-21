@@ -118,15 +118,15 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
               onClick={() => setOpenSidebar(!openSidebar)}
             />
             {isClient && user ? (
-              <Link href="/profile">
-                <Image
-                  src={user.avatar ? user.avatar.url : defaultAvatar}
-                  alt="avatar"
-                  width={32}
-                  height={32}
-                  className="h-8 w-8 rounded-full object-cover"
-                />
-              </Link>
+            <Link href="/profile">
+            <Image
+              src={user.avatar ? user.avatar.url : defaultAvatar}
+              alt="avatar"
+              width={40}
+              height={40}
+              className={`h-10 w-10 rounded-full object-cover ${activeItem === 5 ? "border-[3px] border-[#30bbb2ca]" : ""}`}
+            />
+          </Link>          
             ) : (
               <FaRegUserCircle
                 size={25}

@@ -84,7 +84,7 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="flex flex-col">
             <label
-              className="block text-black dark:text-white mb-2"
+              className="block text-black dark:text-white mb-1"
               htmlFor="name"
             >
               Full Name
@@ -98,10 +98,9 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <br />
           <div className="flex flex-col">
             <label
-              className="block text-black dark:text-white mb-2"
+              className="block text-black dark:text-white mb-1 mt-4"
               htmlFor="email"
             >
               Email
@@ -115,12 +114,11 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
               value={user?.email || ""}
             />
           </div>
-          <br />
           <button
             type="submit"
-            className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+            className="relative mt-4 inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
           >
-            <span className="relative px-10 py-2 text-[17px] transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            <span className="relative px-10 py-2.5 text-[17px] transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
               Update Profile
             </span>
           </button>
