@@ -57,14 +57,14 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
   };
 
   return (
-    <div className="w-full flex justify-center flex-col items-center py-6">
+    <div className="w-full max-w-3xl mx-auto flex justify-center flex-col items-center py-6">
       <div className="relative">
         <Image
           src={user.avatar?.url || avatar || defaultAvatar}
           alt="Profile Photo"
           width={128}
           height={128}
-          className="cursor-pointer object-cover w-32 h-32 border-2 border-[#30bbb2ca] rounded-full"
+          className="cursor-pointer object-cover w-32 h-32 border-4 border-[#044b47ca] rounded-full"
         />
         <input
           type="file"
