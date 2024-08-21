@@ -1,9 +1,8 @@
 "use client";
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import ProfileSidebar from "./ProfileSidebar";
-import { useLogOutQuery } from "@/app/redux/features/auth/authApi";
+import { useLogoutQuery } from "@/app/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 type Props = {
   user: any;
@@ -15,25 +14,27 @@ const Profile: FC<Props> = ({ user }) => {
   const [avatar, setAvatar] = useState(null);
   const [logout, setLogout] = useState(false);
 
-  const {} = useLogOutQuery(undefined, {
+  const {} = useLogoutQuery(undefined, {
     skip: !logout ? true : false,
   });
 
   const logoutHandler = async () => {
-    signOut();
     setLogout(true);
-    redirect("/");
+    await signOut();
   };
 
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
+  useEffect(() => {
+    const handleScroll = () => {
       if (window.scrollY > 85) {
         setScroll(true);
       } else {
         setScroll(false);
       }
-    });
-  }
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="w-[90%] mx-auto flex gap-6">

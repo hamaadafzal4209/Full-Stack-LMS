@@ -13,8 +13,12 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import avatar from "../../../public/assets/Profile.png";
 import { useSession } from "next-auth/react";
-import { useSocialAuthMutation } from "@/app/redux/features/auth/authApi";
+import {
+  useLogoutQuery,
+  useSocialAuthMutation,
+} from "@/app/redux/features/auth/authApi";
 import toast from "react-hot-toast";
+import { useLoadUserQuery } from "@/app/redux/features/api/apiSlice";
 
 type Props = {
   open: boolean;
@@ -30,35 +34,41 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
   const { user } = useSelector((state: any) => state.auth);
   const [isClient, setIsClient] = useState(false);
 
+  const {
+    data: userData,
+    isLoading,
+    refetch,
+  } = useLoadUserQuery(undefined, {});
   const { data } = useSession();
   const [socialAuth, { isSuccess, error }] = useSocialAuthMutation();
-
-  // Social Authentication Handler
-  const handleSocialAuth = async () => {
-    if (data) {
-      await socialAuth({
-        email: data?.user?.email,
-        name: data?.user?.name,
-        avatar: data?.user?.image,
-      });
-    }
-  };
+  const [logout, setLogout] = useState(false);
+  const {} = useLogoutQuery(undefined, {
+    skip: !logout ? true : false,
+  });
 
   useEffect(() => {
-    if (!user) {
-      handleSocialAuth();
+    if (!isLoading) {
+      if (!userData) {
+        if (data) {
+          socialAuth({
+            email: data?.user?.email,
+            name: data?.user?.name,
+            avatar: data?.user?.image,
+          });
+          refetch();
+        }
+      }
     }
-  }, [data, user, socialAuth]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Login successful");
+    if (data === null) {
+      if (isSuccess) {
+        toast.success("Welcome back to ELearning!");
+        setOpen(false);
+      }
     }
-    if (error && "data" in error) {
-      const errorMessage = (error as any)?.data?.message || "An error occurred";
-      toast.error(errorMessage);
+    if (data === null && !isLoading && !userData) {
+      setLogout(true);
     }
-  }, [isSuccess, error]);
+  }, [data, isLoading, isSuccess, refetch, setOpen, socialAuth, userData]);
 
   useEffect(() => {
     setIsClient(true);
@@ -78,12 +88,11 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
 
   const handleUserIconClick = () => {
     setOpen(true);
-    setRoute("Login"); // Default to "Login", adjust as necessary
+    setRoute("Login");
   };
 
   return (
     <>
-      {/* Top header --- Navbar */}
       <div
         className={`${
           active
@@ -136,7 +145,6 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
         )}
       </div>
 
-      {/* Form popup */}
       {route === "Login" && open && (
         <CustomModal
           open={open}

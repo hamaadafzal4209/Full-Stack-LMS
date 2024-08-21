@@ -6,31 +6,16 @@ type RegistrationResponse = {
   activationToken: string;
 };
 
-type RegistrationData = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-type ActivationResponse = {
-  success: boolean;
-  message: string;
-};
-
-type ActivationData = {
-  activation_token: string;
-  activation_code: string;
-};
+type RegistrationData = {};
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // Registration endpoint
     register: builder.mutation<RegistrationResponse, RegistrationData>({
       query: (data) => ({
         url: "registration",
         method: "POST",
         body: data,
-        credentials: "include",
+        credentials: "include" as const,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
@@ -41,13 +26,11 @@ export const authApi = apiSlice.injectEndpoints({
             })
           );
         } catch (error: any) {
-          console.error("Registration failed:", error);
+          console.log(error);
         }
       },
     }),
-
-    // Activation endpoint
-    activation: builder.mutation<ActivationResponse, ActivationData>({
+    activation: builder.mutation({
       query: ({ activation_token, activation_code }) => ({
         url: "activate-user",
         method: "POST",
@@ -57,12 +40,7 @@ export const authApi = apiSlice.injectEndpoints({
         },
       }),
     }),
-
-    // Login endpoint
-    login: builder.mutation<
-      { accessToken: string; user: any },
-      { email: string; password: string }
-    >({
+    login: builder.mutation({
       query: ({ email, password }) => ({
         url: "login",
         method: "POST",
@@ -70,7 +48,7 @@ export const authApi = apiSlice.injectEndpoints({
           email,
           password,
         },
-        credentials: "include",
+        credentials: "include" as const,
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
@@ -82,12 +60,10 @@ export const authApi = apiSlice.injectEndpoints({
             })
           );
         } catch (error: any) {
-          console.error("Login failed:", error);
+          console.log(error);
         }
       },
     }),
-
-    // Social Auth endpoint
     socialAuth: builder.mutation({
       query: ({ email, name, avatar }) => ({
         url: "social-auth",
@@ -113,9 +89,7 @@ export const authApi = apiSlice.injectEndpoints({
         }
       },
     }),
-
-    // logout endpoint
-    logOut: builder.query({
+    logout: builder.query({
       query: () => ({
         url: "logout",
         method: "GET",
@@ -123,13 +97,7 @@ export const authApi = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
-          const result = await queryFulfilled;
-          dispatch(
-            userLoggedOut({
-              accessToken: "",
-              user: "",
-            })
-          );
+          dispatch(userLoggedOut());
         } catch (error: any) {
           console.log(error);
         }
@@ -143,5 +111,5 @@ export const {
   useActivationMutation,
   useLoginMutation,
   useSocialAuthMutation,
-  useLogOutQuery
+  useLogoutQuery,
 } = authApi;
