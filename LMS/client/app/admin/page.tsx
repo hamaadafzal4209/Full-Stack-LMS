@@ -4,6 +4,7 @@ import Heading from "../utils/Headings";
 import { useSelector } from "react-redux";
 import AdminProtected from "../hooks/adminProtected";
 import AdminSidebar from "../components/Admin/sidebar/AdminSidebar";
+import AdminDashboardHero from "../components/Admin/AdminDashboardHero";
 
 type Props = {};
 
@@ -17,11 +18,11 @@ const Admin: FC<Props> = (Props) => {
         keywords="MERN, MEAN, REDUX"
       />
         <div className="flex min-h-screen">
-          <div className="2xl:w-1/6 w-72">
+          <div className="2xl:w-1/6 max-w-72">
             <AdminSidebar />
           </div>
           <div className="w-full">
-            {/* <AdminDashboardHero isDashboard={true} /> */}
+            <AdminDashboardHero isDashboard={true} />
           </div>
         </div>
     </AdminProtected>

@@ -12,9 +12,10 @@ import {
   PeopleOutlined,
   Quiz,
   ReceiptOutlined,
+  Settings,
   VideoCall,
   Web,
-  Wysiwyg
+  Wysiwyg,
 } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import { useTheme } from "next-themes";
@@ -25,6 +26,7 @@ import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { useSelector } from "react-redux";
 import avatarDefault from "../../../../public/assets/Profile.png";
+
 type Props = {};
 
 interface itemProps {
@@ -47,8 +49,11 @@ const Item: React.FC<itemProps> = ({
       active={selected === title}
       onClick={() => setSelected(title)}
       icon={icon}
+      className={`${
+        selected === title ? "bg-[#1E2A53] dark:bg-[#4A5A88]" : "bg-transparent"
+      } hover:bg-[#162B59] dark:hover:bg-[#3C4A74] rounded-md my-1.5 mr-3`}
     >
-      <Typography className="!text-4 !font-Poppins">{title}</Typography>
+      <Typography className="!font-Poppins">{title}</Typography>
       <Link href={to} />
     </MenuItem>
   );
@@ -60,7 +65,7 @@ const AdminSidebar = (props: Props) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -74,28 +79,26 @@ const AdminSidebar = (props: Props) => {
     <Box
       sx={{
         "& .pro-sidebar-inner": {
-          background: `${
-            theme === "dark" ? "#111C43 !important" : "white !important"
-          }`,
+          background: theme === "dark" ? "#134E4A" : "#ffffff !important",
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: "#ffffff !important",
         },
-        "& .pro-menu.active": {
-          color: "#6870fa !important",
+        "& .pro-inner-item.active": {
+          color: "#ffffff !important",
         },
         "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
+          padding: "5px 0px 5px 20px !important",
           opacity: 1,
         },
         "& .pro-menu-item": {
           color: `${theme !== "dark" && "#000"}`,
         },
       }}
-      className="!bg-white dark:bg-[#111c43]"
+      className={theme === "dark" ? "dark:bg-cyan-950" : "bg-white"}
     >
       <ProSidebar
         collapsed={isCollapsed}
@@ -110,18 +113,15 @@ const AdminSidebar = (props: Props) => {
         <Menu iconShape="square">
           {/* Logo */}
           <MenuItem
+            className="text-black dark:text-white hover:text-black"
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <ArrowForwardIos /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-            }}
           >
             {!isCollapsed && (
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
-                ml="15px"
               >
                 <Link href="/">
                   <Typography
@@ -135,7 +135,7 @@ const AdminSidebar = (props: Props) => {
                   onClick={() => setIsCollapsed(isCollapsed)}
                   className="inline-block"
                 >
-                  <ArrowBackIos className="text-black dark:text-[#ffffffc1]" />
+                  <ArrowBackIos className="text-black dark:text-[#ffffff]" />
                 </IconButton>
               </Box>
             )}
@@ -159,25 +159,26 @@ const AdminSidebar = (props: Props) => {
               </Box>
               <Box textAlign="center">
                 <Typography
-                  variant="h4"
-                  className="!text-5 text-black dark:text-white"
-                  sx={{ m: "10px 0 0 0" }}
+                  variant="h6"
+                  className="text-black !text-2xl !pt-4 dark:text-white"
                 >
                   {user.name}
                 </Typography>
                 <Typography
                   variant="h6"
-                  className="!text-5 text-black dark:text-white capitalize"
-                  sx={{ m: "10px 0 0 0" }}
+                  className=" text-black !text-sm dark:text-white capitalize"
                 >
-                  - {user.role}
+                  ~ {user.role}
                 </Typography>
               </Box>
             </Box>
           )}
 
           {/* Menu Items */}
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box
+            paddingLeft={isCollapsed ? undefined : "10%"}
+            marginLeft={isCollapsed ? "0px" : undefined}
+          >
             <Item
               title="Dashboard"
               to="/admin"
@@ -188,9 +189,6 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Data"}
@@ -214,9 +212,6 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Content"}
@@ -240,9 +235,6 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Customization"}
@@ -274,9 +266,6 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Controllers"}
@@ -292,9 +281,6 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Analytics"}
@@ -326,21 +312,18 @@ const AdminSidebar = (props: Props) => {
 
             <Typography
               variant="h5"
-              sx={{
-                m: "15px 0 5px 25px",
-              }}
               className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
             >
               {!isCollapsed && "Extras"}
             </Typography>
 
-            {/* <Item
+            <Item
               title="Settings"
               to="/admin/settings"
               icon={<Settings />}
               selected={selected}
               setSelected={setSelected}
-            /> */}
+            />
 
             <Item
               title="Logout"
