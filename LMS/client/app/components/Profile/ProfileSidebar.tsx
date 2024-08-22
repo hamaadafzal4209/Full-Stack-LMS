@@ -1,11 +1,11 @@
 import Image from "next/image";
 import React, { FC } from "react";
 import defaultAvatar from "../../../public/assets/Profile.png";
-import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { AiOutlineLogout } from "react-icons/ai";
 import Link from "next/link";
 import { SiCoursera } from "react-icons/si";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { LuLayoutDashboard } from "react-icons/lu";
 
 type Props = {
   user: any;
@@ -75,10 +75,7 @@ const ProfileSidebar: FC<Props> = ({
           }`}
           href={"/admin"}
         >
-          <MdOutlineAdminPanelSettings
-            size={20}
-            className="dark:text-white text-black"
-          />
+          <LuLayoutDashboard size={20} className="dark:text-white text-black" />
           <h5 className="md:block hidden font-Poppins dark:text-white text-black">
             Admin Dashboard
           </h5>

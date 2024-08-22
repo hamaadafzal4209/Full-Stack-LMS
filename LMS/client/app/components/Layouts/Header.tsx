@@ -106,7 +106,7 @@ const Header: FC<Props> = ({ activeItem, route, open, setOpen, setRoute }) => {
               href="/"
               className="text-[25px] font-Poppins font-[500] text-black dark:text-white"
             >
-              ELearning
+              CodeMentor
             </Link>
           </div>
           <div className="flex items-center gap-4 md:gap-6">
