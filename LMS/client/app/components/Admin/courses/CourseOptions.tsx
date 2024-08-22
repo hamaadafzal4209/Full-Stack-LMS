@@ -15,7 +15,7 @@ const CourseOptions: FC<Props> = ({ active, setActive }) => {
   ];
 
   return (
-    <div>
+    <div className="sticky top-20">
       {options.map((option: any, index: number) => (
         <div className={`w-full flex py-5`} key={index}>
           <div
