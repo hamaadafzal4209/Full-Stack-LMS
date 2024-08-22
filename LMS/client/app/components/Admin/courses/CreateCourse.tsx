@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CourseInformation from "./CourseInformation";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
+import CourseContent from "./CourseContent";
 
 type Props = {};
 
@@ -39,9 +40,10 @@ const CreateCourse = (props: Props) => {
   ]);
   const [courseData, setCourseData] = useState({});
 
-  return <div className="w-full min-h-screen flex">
-    <div className="w-[80%] px-6 xl:px-12 mb-20">
-    {active === 0 && (
+  return (
+    <div className="w-full min-h-screen flex">
+      <div className="w-[80%] px-6 xl:px-12 mb-20">
+        {active === 0 && (
           <CourseInformation
             courseInfo={courseInfo}
             setCourseInfo={setCourseInfo}
@@ -49,21 +51,23 @@ const CreateCourse = (props: Props) => {
             setActive={setActive}
           />
         )}
-    {active === 1 && (
+        {active === 1 && (
           <CourseData
-          benefits={benefits}
-          setBenefits={setBenefits}
-          prerequisites={prerequisites}
-          setPrerequisites={setPrerequisites}
-          active={active}
-          setActive={setActive}
+            benefits={benefits}
+            setBenefits={setBenefits}
+            prerequisites={prerequisites}
+            setPrerequisites={setPrerequisites}
+            active={active}
+            setActive={setActive}
           />
         )}
+        {active === 2 && <CourseContent />}
+      </div>
+      <div className="w-[20%]">
+        <CourseOptions active={active} setActive={setActive} />
+      </div>
     </div>
-    <div className="w-[20%]">
-    <CourseOptions active={active} setActive={setActive} />
-    </div>
-  </div>;
+  );
 };
 
 export default CreateCourse;
