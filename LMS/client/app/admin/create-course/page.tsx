@@ -16,7 +16,7 @@ const page = (props: Props) => {
         keywords="MERN, MEAN, REDUX"
       />
       <div className="flex min-h-screen">
-        <div className="2xl:w-1/6 max-w-72 w-full">
+        <div className="max-w-72 w-full">
           <AdminSidebar />
         </div>
         <div className="w-full">

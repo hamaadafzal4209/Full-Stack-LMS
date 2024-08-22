@@ -18,7 +18,7 @@ const Admin: FC<Props> = (Props) => {
         keywords="MERN, MEAN, REDUX"
       />
         <div className="flex min-h-screen">
-          <div className="2xl:w-1/6 max-w-72">
+          <div className="max-w-72">
             <AdminSidebar />
           </div>
           <div className="w-full">
