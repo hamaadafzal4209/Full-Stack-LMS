@@ -9,7 +9,7 @@ type Props = {
 
 const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
   return (
-    <div className="w-full h-20 shadow-md border-b px-6">
+    <div className="w-full h-20 px-6">
       <div className="flex items-center justify-between h-full w-full gap-4">
         <div></div>
         <div className="flex justify-end items-center">
