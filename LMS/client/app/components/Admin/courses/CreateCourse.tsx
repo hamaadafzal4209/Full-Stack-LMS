@@ -40,6 +40,10 @@ const CreateCourse = (props: Props) => {
   ]);
   const [courseData, setCourseData] = useState({});
 
+  const handleSubmit = async () => {
+    //
+  };
+
   return (
     <div className="w-full min-h-screen flex">
       <div className="w-[80%] px-6 xl:px-12 mb-20">
@@ -61,7 +65,15 @@ const CreateCourse = (props: Props) => {
             setActive={setActive}
           />
         )}
-        {active === 2 && <CourseContent />}
+        {active === 2 && (
+          <CourseContent
+            active={active}
+            setActive={setActive}
+            courseContentData={courseContentData}
+            setCourseContentData={setCourseContentData}
+            handleSubmit={handleSubmit}
+          />
+        )}
       </div>
       <div className="w-[20%]">
         <CourseOptions active={active} setActive={setActive} />
