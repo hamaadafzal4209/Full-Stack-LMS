@@ -1,7 +1,8 @@
 import { styles } from "@/app/styles/style";
 import React, { FC, useState } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
-import { BsPencil } from "react-icons/bs";
+import toast from "react-hot-toast";
+import { AiOutlineDelete, AiOutlinePlusCircle } from "react-icons/ai";
+import { BsLink45Deg, BsPencil } from "react-icons/bs";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 type Props = {
@@ -41,6 +42,35 @@ const CourseContent: FC<Props> = ({
     setCourseContentData(updateData);
   };
 
+  const handleAddLink = (index: number) => {
+    const updateData = [...courseContentData];
+    updateData[index].links.push({ title: "", url: "" });
+    setCourseContentData(updateData);
+  };
+
+  const newContentHandler = () => {
+    const lastItem = courseContentData[courseContentData.length - 1];
+
+    if (
+      lastItem.title === "" ||
+      lastItem.description === "" ||
+      lastItem.videoUrl === "" ||
+      lastItem.links[0].title === "" ||
+      lastItem.links[0].url === ""
+    ) {
+      toast.error("Please fill all the fields before adding new content");
+    } else {
+      const newContent = {
+        videoUrl: "",
+        title: "",
+        description: "",
+        videoSection: lastItem.videoSection || "Untitled Section",
+        links: [{ title: "", url: "" }],
+      };
+      setCourseContentData([...courseContentData, newContent]);
+    }
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -52,14 +82,20 @@ const CourseContent: FC<Props> = ({
           return (
             <div
               key={index}
-              className={`w-full bg-[#cdc8c817] p-4 ${showSectionInput ? "mt-10" : "mb-0"}`}
+              className={`w-full bg-[#cdc8c817] p-4 ${
+                showSectionInput ? "mt-10" : "mb-0"
+              }`}
             >
               {showSectionInput && (
                 <>
                   <div className="flex items-center w-full mb-2">
                     <input
                       type="text"
-                      className={`text-lg ${item.videoSection === "Untitled Section" ? "w-[170px]" : "w-min"} font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
+                      className={`text-lg ${
+                        item.videoSection === "Untitled Section"
+                          ? "w-[170px]"
+                          : "w-min"
+                      } font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
                       value={item.videoSection}
                       onChange={(e) => {
                         const updateData = [...courseContentData];
@@ -76,7 +112,7 @@ const CourseContent: FC<Props> = ({
                   <>
                     {item.title ? (
                       <p className="font-Poppins text-black dark:text-white">
-                        {item + 1}. {item.title}
+                        {index + 1}. {item.title}
                       </p>
                     ) : (
                       <></>
@@ -90,7 +126,9 @@ const CourseContent: FC<Props> = ({
 
                 <div className="flex items-center">
                   <AiOutlineDelete
-                    className={`dark:text-white text-lg mr-2 text-black ${index > 0 ? "cursor-pointer" : "cursor-no-drop"}`}
+                    className={`dark:text-white text-lg mr-2 text-black ${
+                      index > 0 ? "cursor-pointer" : "cursor-no-drop"
+                    }`}
                     onClick={() => {
                       if (index > 0) {
                         const updateData = [...courseContentData];
@@ -170,7 +208,11 @@ const CourseContent: FC<Props> = ({
                               Link {linkIndex + 1}
                             </label>
                             <AiOutlineDelete
-                              className={`${linkIndex === 0 ? "cursor-no-drop" : "cursor-pointer"} text-black dark:text-white text-[20px]`}
+                              className={`${
+                                linkIndex === 0
+                                  ? "cursor-no-drop"
+                                  : "cursor-pointer"
+                              } text-black dark:text-white text-[20px]`}
                               onClick={() =>
                                 linkIndex === 0
                                   ? null
@@ -204,6 +246,16 @@ const CourseContent: FC<Props> = ({
                           />
                         </div>
                       ))}
+                      {/* add link button */}
+                      <div className="inline-block mb-4 bg-indigo-800 px-4 py-2 rounded-md">
+                        <p
+                          className="flex items-center text-white cursor-pointer"
+                          onClick={() => handleAddLink(index)}
+                        >
+                          <BsLink45Deg className="mr-1" size={20} />
+                          <span className="text-lg">Add Link</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -211,6 +263,16 @@ const CourseContent: FC<Props> = ({
             </div>
           );
         })}
+        {/* Add New Content button moved outside the map */}
+        <div className="inline-block mt-6 bg-indigo-800 px-4 py-2 rounded-md">
+          <p
+            className="flex items-center text-white cursor-pointer"
+            onClick={newContentHandler}
+          >
+            <AiOutlinePlusCircle className="mr-1" size={20} />
+            <span className="text-lg">Add New Content</span>
+          </p>
+        </div>
       </form>
     </div>
   );
