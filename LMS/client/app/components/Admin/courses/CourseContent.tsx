@@ -71,6 +71,47 @@ const CourseContent: FC<Props> = ({
     }
   };
 
+  const addNewSection = () => {
+    if (
+      courseContentData[courseContentData.length - 1].title === "" ||
+      courseContentData[courseContentData.length - 1].description === "" ||
+      courseContentData[courseContentData.length - 1].videoUrl === "" ||
+      courseContentData[courseContentData.length - 1].links[0].title === "" ||
+      courseContentData[courseContentData.length - 1].links[0].url === ""
+    ) {
+      toast.error("Please fill all the fields");
+    } else {
+      setActiveSection(activeSection + 1);
+      const newContent = {
+        videoUrl: "",
+        title: "",
+        description: "",
+        videoSection: `Untitled Section ${activeSection}`,
+        links: [{ title: "", url: "" }],
+      };
+      setCourseContentData([...courseContentData, newContent]);
+    }
+  };
+
+  const prevButton = () => {
+    setActive(active - 1);
+  };
+
+  const handleOptions = () => {
+    if (
+      courseContentData[courseContentData.length - 1].title === "" ||
+      courseContentData[courseContentData.length - 1].description === "" ||
+      courseContentData[courseContentData.length - 1].videoUrl === "" ||
+      courseContentData[courseContentData.length - 1].links[0].title === "" ||
+      courseContentData[courseContentData.length - 1].links[0].url === ""
+    ) {
+      toast.error("Please fill all fields");
+    } else {
+      setActive(active + 1);
+      handleCourseSubmit();
+    }
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -82,20 +123,14 @@ const CourseContent: FC<Props> = ({
           return (
             <div
               key={index}
-              className={`w-full bg-[#cdc8c817] p-4 ${
-                showSectionInput ? "mt-10" : "mb-0"
-              }`}
+              className={`w-full bg-[#cdc8c817] p-4 ${showSectionInput ? "mt-10" : "mb-0"}`}
             >
               {showSectionInput && (
                 <>
                   <div className="flex items-center w-full mb-2">
                     <input
                       type="text"
-                      className={`text-lg ${
-                        item.videoSection === "Untitled Section"
-                          ? "w-[170px]"
-                          : "w-min"
-                      } font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
+                      className={`text-lg ${item.videoSection === "Untitled Section" ? "w-[170px]" : "w-min"} font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
                       value={item.videoSection}
                       onChange={(e) => {
                         const updateData = [...courseContentData];
@@ -126,9 +161,7 @@ const CourseContent: FC<Props> = ({
 
                 <div className="flex items-center">
                   <AiOutlineDelete
-                    className={`dark:text-white text-lg mr-2 text-black ${
-                      index > 0 ? "cursor-pointer" : "cursor-no-drop"
-                    }`}
+                    className={`dark:text-white text-lg mr-2 text-black ${index > 0 ? "cursor-pointer" : "cursor-no-drop"}`}
                     onClick={() => {
                       if (index > 0) {
                         const updateData = [...courseContentData];
@@ -138,8 +171,8 @@ const CourseContent: FC<Props> = ({
                     }}
                   />
                   <MdOutlineKeyboardArrowDown
-                    fontSize="large"
-                    className="text-black dark:text-white"
+                    size={20}
+                    className="text-black dark:text-white cursor-pointer"
                     style={{
                       transform: isCollapsed[index]
                         ? "rotate(180deg)"
@@ -208,11 +241,7 @@ const CourseContent: FC<Props> = ({
                               Link {linkIndex + 1}
                             </label>
                             <AiOutlineDelete
-                              className={`${
-                                linkIndex === 0
-                                  ? "cursor-no-drop"
-                                  : "cursor-pointer"
-                              } text-black dark:text-white text-[20px]`}
+                              className={`${linkIndex === 0 ? "cursor-no-drop" : "cursor-pointer"} text-black dark:text-white text-[20px]`}
                               onClick={() =>
                                 linkIndex === 0
                                   ? null
@@ -260,20 +289,45 @@ const CourseContent: FC<Props> = ({
                   </div>
                 </>
               )}
+              {/* add new content */}
+              {index === courseContentData.length - 1 && (
+                <div className="inline-block mt-4 bg-indigo-950 px-4 py-2 rounded-md cursor-pointer">
+                  <p
+                    className="flex items-center text-white cursor-pointer"
+                    onClick={() => newContentHandler()}
+                  >
+                    <AiOutlinePlusCircle className="mr-1" size={20} />
+                    <span className="text-lg">Add New Content</span>
+                  </p>
+                </div>
+              )}
             </div>
           );
         })}
-        {/* Add New Content button moved outside the map */}
-        <div className="inline-block mt-6 bg-indigo-800 px-4 py-2 rounded-md">
+        <div className="inline-block mt-4 bg-indigo-950 px-4 py-2 rounded-md cursor-pointer">
           <p
             className="flex items-center text-white cursor-pointer"
-            onClick={newContentHandler}
+            onClick={() => addNewSection()}
           >
             <AiOutlinePlusCircle className="mr-1" size={20} />
-            <span className="text-lg">Add New Content</span>
+            <span className="text-lg">Add New Section</span>
           </p>
         </div>
       </form>
+      <div className="flex w-full items-center justify-between mt-4">
+        <div
+          className="w-full md:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
+          onClick={() => prevButton()}
+        >
+          Prev
+        </div>
+        <div
+          className="w-full md:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
+          onClick={() => handleOptions()}
+        >
+          Next
+        </div>
+      </div>
     </div>
   );
 };
