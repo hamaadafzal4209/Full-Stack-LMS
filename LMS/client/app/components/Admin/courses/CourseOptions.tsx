@@ -25,7 +25,7 @@ const CourseOptions: FC<Props> = ({ active, setActive }) => {
                 : "bg-gray-300 dark:bg-[#384766]"
             } relative`}
           >
-            <IoMdCheckmark className="text-[25px] text-black dark:text-white" />
+            <IoMdCheckmark className="text-[25px] text-white" />
             {index !== options.length - 1 && (
               <div
                 className={`absolute h-[40px] w-1 ${
