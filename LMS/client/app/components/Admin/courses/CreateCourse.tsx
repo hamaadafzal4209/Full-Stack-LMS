@@ -8,7 +8,7 @@ import CourseContent from "./CourseContent";
 type Props = {};
 
 const CreateCourse = (props: Props) => {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState({
     name: "",
     description: "",
@@ -41,9 +41,51 @@ const CreateCourse = (props: Props) => {
   const [courseData, setCourseData] = useState({});
 
   const handleSubmit = async () => {
-    //
-  };
+    // format benefit array
+    const formattedBenefits = benefits.map((benefit) => ({
+      title: benefit.title,
+    }));
+    // format prerequisites array
+    const formattedPrerequisites = prerequisites.map((prerequisite) => ({
+      title: prerequisite.title,
+    }));
+    // format course content array
+    const formattedCourseContentData = courseContentData.map(
+      (courseContent) => ({
+        videoUrl: courseContent.videoUrl,
+        title: courseContent.title,
+        description: courseContent.description,
+        videoSection: courseContent.videoSection,
+        links: courseContent.links.map((link) => ({
+          title: link.title,
+          url: link.url,
+        })),
+        suggestions: courseContent.suggestions,
+      })
+    );
 
+    // prepare our data object
+
+    const data = {
+      name: courseInfo.name,
+      description: courseInfo.description,
+      price: courseInfo.price,
+      estimatedPrice: courseInfo.estimatedPrice,
+      tags: courseInfo.tags,
+      level: courseInfo.level,
+      demoUrl: courseInfo.demoUrl,
+      thumbnail: courseInfo.thumbnail,
+      totalVideo: courseContentData.length,
+      benefits: formattedBenefits,
+      prerequisites: formattedPrerequisites,
+      courseData: formattedCourseContentData,
+    };
+
+    setCourseData(data);
+  };
+  
+  console.log(courseData);
+  
   return (
     <div className="w-full min-h-screen flex">
       <div className="w-[80%] px-6 xl:px-12 mb-20">
