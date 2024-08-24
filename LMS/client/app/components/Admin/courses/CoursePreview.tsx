@@ -3,6 +3,7 @@ import CoursePlayer from "@/app/utils/CoursePlayer";
 import Ratings from "@/app/utils/Ratings";
 import React, { FC, useState } from "react";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import Loader from "../../Loader/Loader";
 
 type Props = {
   active: number;
@@ -21,8 +22,6 @@ const CoursePreview: FC<Props> = ({
 }) => {
   // Debugging
   console.log(courseData);
-
-  if (isLoading) return <p>Loading...</p>;
 
   const discountPercentage =
     ((courseData?.estimatedPrice - courseData?.price) /
@@ -85,7 +84,11 @@ const CoursePreview: FC<Props> = ({
             placeholder="Discount code..."
             className={`${styles.input} w-[50%] ml-3`}
           />
-          <button className={`${styles.button} !w-[120px] ml-4 dark:text-white`}>Apply</button>
+          <button
+            className={`${styles.button} !w-[120px] ml-4 dark:text-white`}
+          >
+            Apply
+          </button>
         </div>
 
         <ul className="mt-4 space-y-2 text-lg">
@@ -97,7 +100,9 @@ const CoursePreview: FC<Props> = ({
       </div>
 
       <div className="w-full mt-10">
-        <h1 className="text-[25px] font-bold">{courseData?.name || "Course Name Not Available"}</h1>
+        <h1 className="text-[25px] font-bold">
+          {courseData?.name || "Course Name Not Available"}
+        </h1>
         <div className="flex items-center justify-between pt-3">
           <div className="flex items-center">
             <Ratings value={rating} onChange={handleRatingChange} />
@@ -156,7 +161,7 @@ const CoursePreview: FC<Props> = ({
           onClick={createCourse}
           disabled={isLoading}
         >
-          {isLoading ? 'Creating...' : 'Create'}
+          {"Create"}
         </button>
       </div>
     </div>

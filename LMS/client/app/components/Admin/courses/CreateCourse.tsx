@@ -102,10 +102,12 @@ const CreateCourse = (props: Props) => {
     const data = courseData;
     if (!isLoading) {
       await createCourse(data);
+      toast.success("Course created successfully!");
     }
   };
 
   console.log(courseData);
+  console.table(courseData);
 
   return (
     <div className="w-full min-h-screen flex">
