@@ -4,6 +4,7 @@ import CourseInformation from "./CourseInformation";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
+import CoursePreview from "./CoursePreview";
 
 type Props = {};
 
@@ -84,7 +85,9 @@ const CreateCourse = (props: Props) => {
     setCourseData(data);
   };
   
-  console.log(courseData);
+  const handleCourseCreate = () => {
+    // 
+  }
   
   return (
     <div className="w-full min-h-screen flex">
@@ -114,6 +117,14 @@ const CreateCourse = (props: Props) => {
             courseContentData={courseContentData}
             setCourseContentData={setCourseContentData}
             handleSubmit={handleSubmit}
+          />
+        )}
+        {active === 3 && (
+          <CoursePreview
+            active={active}
+            setActive={setActive}
+            courseData={courseData}
+            handleCourseCreate={handleCourseCreate}
           />
         )}
       </div>
