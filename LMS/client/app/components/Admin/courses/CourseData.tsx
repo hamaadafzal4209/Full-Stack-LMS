@@ -104,7 +104,7 @@ const CourseData: FC<Props> = ({
         />
       </div>
 
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between gap-4">
         <div
           className="w-full md:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
           onClick={() => prevButton()}

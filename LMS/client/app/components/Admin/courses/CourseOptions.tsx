@@ -15,11 +15,11 @@ const CourseOptions: FC<Props> = ({ active, setActive }) => {
   ];
 
   return (
-    <div className="sticky top-20">
+    <div className="hidden lg:block w-full sticky top-20">
       {options.map((option: any, index: number) => (
         <div className={`w-full flex items-center py-5`} key={index}>
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center ${
+            className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center ${
               active + 1 > index
                 ? "bg-blue-500"
                 : "bg-gray-300 dark:bg-[#384766]"

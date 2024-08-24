@@ -102,7 +102,7 @@ const CourseInformation: FC<Props> = ({
           />
         </div>
         <br />
-        <div className="grid grid-cols-2 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <div className="w-full">
             <label htmlFor="price" className={styles.label}>
               Course Price
@@ -158,7 +158,7 @@ const CourseInformation: FC<Props> = ({
           </div>
         </div>
         <br />
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="w-full">
             <label htmlFor="level" className={styles.label}>
               Level
@@ -204,7 +204,7 @@ const CourseInformation: FC<Props> = ({
           />
           <label
             htmlFor="file"
-            className={`w-full min-h-[10vh] cursor-pointer dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
+            className={`w-full min-h-[20vh] text-center cursor-pointer dark:border-white border-[#00000026] p-3 border flex items-center justify-center ${
               dragging ? "bg-blue-500" : "bg-transparent"
             }`}
             onDragOver={handleDragOver}

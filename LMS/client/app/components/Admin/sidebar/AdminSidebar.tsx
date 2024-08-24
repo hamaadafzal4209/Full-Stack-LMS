@@ -43,7 +43,7 @@ const AdminSidebar = (props: Props) => {
   const isActive = (path: string) => currentPath === path;
 
   return (
-    <div className="w-full border-r-4 p-4 h-screen max-h-screen sticky top-0 overflow-y-auto">
+    <div className="w-full p-4 h-screen max-h-screen sticky top-0 overflow-y-auto">
       <div
         className={`flex items-center gap-4 justify-between ${isCollapsed ? "mb-2" : "mb-0"}`}
       >
@@ -246,7 +246,7 @@ const AdminSidebar = (props: Props) => {
         </div>
       </Link>
 
-      <div className="mt-2 w-full">
+      <div className="mt-2 w-full mb-8">
         <Link href="/">
           <div className="px-5 py-3 text-left rounded-md w-full bg-red-800 hover:bg-red-900 text-white hover:text-white font-semibold flex items-center justify-start gap-2">
             <ExitToApp />

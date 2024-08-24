@@ -84,14 +84,14 @@ const CreateCourse = (props: Props) => {
 
     setCourseData(data);
   };
-  
+
   const handleCourseCreate = () => {
-    // 
-  }
-  
+    //
+  };
+
   return (
     <div className="w-full min-h-screen flex">
-      <div className="w-[80%] px-6 xl:px-12 mb-20">
+      <div className="w-full lg:w-[80%] px-6 xl:px-12 mb-20">
         {active === 0 && (
           <CourseInformation
             courseInfo={courseInfo}
@@ -128,7 +128,7 @@ const CreateCourse = (props: Props) => {
           />
         )}
       </div>
-      <div className="w-[20%]">
+      <div className="lg:w-[20%] w-0">
         <CourseOptions active={active} setActive={setActive} />
       </div>
     </div>

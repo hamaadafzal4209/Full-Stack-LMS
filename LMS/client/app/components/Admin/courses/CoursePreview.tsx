@@ -78,11 +78,7 @@ const CoursePreview: FC<Props> = ({
             placeholder="Discount code..."
             className={`${styles.input} w-[50%] ml-3`}
           />
-          <button
-            className={`${styles.button} !w-[120px] ml-4`}
-          >
-            Apply
-          </button>
+          <button className={`${styles.button} !w-[120px] ml-4`}>Apply</button>
         </div>
 
         <ul className="mt-4 space-y-2 text-lg">
@@ -104,20 +100,30 @@ const CoursePreview: FC<Props> = ({
         </div>
 
         <div className="mt-10">
-          <h1 className="text-[25px] font-bold">What you will learn from this course?</h1>
+          <h1 className="text-[25px] font-bold">
+            What you will learn from this course?
+          </h1>
           {courseData?.benefits?.map((item: any, index: number) => (
             <div className="flex items-center py-2" key={index}>
-              <IoCheckmarkDoneOutline className="text-green-500 mr-2" size={20} />
+              <IoCheckmarkDoneOutline
+                className="text-green-500 mr-2"
+                size={20}
+              />
               <p>{item.title}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-10">
-          <h1 className="text-[25px] font-bold">What are the prerequisites for starting this course?</h1>
+          <h1 className="text-[25px] font-bold">
+            What are the prerequisites for starting this course?
+          </h1>
           {courseData?.prerequisites?.map((item: any, index: number) => (
             <div className="flex items-center py-2" key={index}>
-              <IoCheckmarkDoneOutline className="text-green-500 mr-2" size={20} />
+              <IoCheckmarkDoneOutline
+                className="text-green-500 mr-2"
+                size={20}
+              />
               <p>{item.title}</p>
             </div>
           ))}
@@ -125,11 +131,13 @@ const CoursePreview: FC<Props> = ({
 
         <div className="mt-10">
           <h1 className="text-[25px] font-bold">Course Details</h1>
-          <p className="text-[18px] mt-4 whitespace-pre-line">{courseData?.description}</p>
+          <p className="text-[18px] mt-4 whitespace-pre-line">
+            {courseData?.description}
+          </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-10">
+      <div className="flex items-center justify-between mt-10 gap-4">
         <button
           className="w-full md:w-[180px] h-[40px] bg-[#37a39a] text-white rounded hover:bg-[#2d8c7f]"
           onClick={prevButton}
