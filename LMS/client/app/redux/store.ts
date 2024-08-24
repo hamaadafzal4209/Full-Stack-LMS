@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/api/apiSlice";
 import authSlice from "./features/auth/authSlice";
+import toast from "react-hot-toast";
 
 export const store = configureStore({
   reducer: {
@@ -15,13 +16,14 @@ export const store = configureStore({
 
 // call the load token on every page load
 const initializeApp = async () => {
-  await store.dispatch(
-    apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true })
-  );
-
-  await store.dispatch(
-    apiSlice.endpoints.loadUser.initiate({}, { forceRefetch: true })
-  );
+  try {
+    await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}));
+    await store.dispatch(apiSlice.endpoints.loadUser.initiate({}));
+  } catch (error) {
+    console.log("Initialization error:", error);
+    toast.error(error);
+  }
 };
 
 initializeApp();
+

@@ -98,7 +98,6 @@ const courseSchema = new Schema<ICourse>(
     },
     categories: {
       type: String,
-      required: [true, "Please enter your categories"],
     },
     price: {
       type: Number,

@@ -7,11 +7,11 @@ import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
 import { useCreateCourseMutation } from "@/app/redux/features/courses/coursesApi";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
-const CreateCourse = (props: Props) => {
+const CreateCourse: React.FC<Props> = () => {
   const [createCourse, { isLoading, error, isSuccess }] =
     useCreateCourseMutation();
   const [active, setActive] = useState(0);
@@ -44,20 +44,37 @@ const CreateCourse = (props: Props) => {
       suggestions: "",
     },
   ]);
-  const [courseData, setCourseData] = useState({});
+  const [courseData, setCourseData] = useState<any>({});
+
+  const router = useRouter();
 
   useEffect(() => {
     if (isSuccess) {
       toast.success("Course Created Successfully");
-      redirect("/admin/courses");
+      router.push("/admin/courses");
+    } else if (error && "data" in error) {
+      const errorData = (error as any).data;
+      toast.error(errorData?.message || "Something went wrong!");
     }
-    if (error && "data" in error) {
-      const errorData = error as any;
-      toast.error(errorData.data.message);
-    }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, router]);
 
   const handleSubmit = async () => {
+    // Validate required fields
+    const missingFields = [];
+    if (!courseInfo.name) missingFields.push("name");
+    if (!courseInfo.description) missingFields.push("description");
+    if (!courseInfo.categories) missingFields.push("categories");
+    if (!courseInfo.price) missingFields.push("price");
+    if (!courseInfo.tags) missingFields.push("tags");
+    if (!courseInfo.level) missingFields.push("level");
+
+    if (missingFields.length > 0) {
+      toast.error(
+        `Please fill in the following fields: ${missingFields.join(", ")}`
+      );
+      return;
+    }
+
     const formattedBenefits = benefits.map((benefit) => ({
       title: benefit.title,
     }));
@@ -83,6 +100,7 @@ const CreateCourse = (props: Props) => {
     const data = {
       name: courseInfo.name,
       description: courseInfo.description,
+      categories: courseInfo.categories,
       price: courseInfo.price,
       estimatedPrice: courseInfo.estimatedPrice,
       tags: courseInfo.tags,
@@ -96,18 +114,21 @@ const CreateCourse = (props: Props) => {
     };
 
     setCourseData(data);
+    setActive(active + 1); // Proceed to the next step only if all fields are valid
   };
 
-  const handleCourseCreate = async (e: any) => {
-    const data = courseData;
+  const handleCourseCreate = async () => {
     if (!isLoading) {
-      await createCourse(data);
-      toast.success("Course created successfully!");
+      try {
+        await createCourse(courseData).unwrap();
+        toast.success("Course created successfully!");
+      } catch (error: any) {
+        toast.error(error?.data?.message || "Course creation failed");
+      }
     }
   };
 
   console.log(courseData);
-  console.table(courseData);
 
   return (
     <div className="w-full min-h-screen flex">

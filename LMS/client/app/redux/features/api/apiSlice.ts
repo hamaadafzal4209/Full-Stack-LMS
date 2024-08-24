@@ -9,16 +9,16 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     refreshToken: builder.query({
       query: () => ({
-        url: "refresh-token",
+        url: "refresh",
         method: "GET",
-        credentials: "include" as const,
+        credentials: "include",
       }),
     }),
     loadUser: builder.query({
       query: () => ({
         url: "me",
         method: "GET",
-        credentials: "include" as const,
+        credentials: "include",
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {

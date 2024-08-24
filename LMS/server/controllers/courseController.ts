@@ -12,34 +12,37 @@ import ejs from "ejs";
 import notificationModel from "../model/notificationModel";
 import axios from "axios";
 
-export const uploadCourse = catchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const data = req.body;
-      const thumbnail = data.thumbnail;
+export const uploadCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const data = req.body;
 
-      // Ensure the thumbnail is provided
-      if (!thumbnail) {
-        return next(new ErrorHandler("Missing required parameter - file", 400));
-      }
-
-      const thumbnailUrl = data.thumbnail.url; // Extract the URL string
-      const myCloud = await cloudinary.v2.uploader.upload(thumbnailUrl, {
-        folder: "courses",
-      });
-
-      data.thumbnail = {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      };
-
-      // Ensure data matches schema structure
-      createCourse(data, res, next);
-    } catch (error: any) {
-      return next(new ErrorHandler(error.message, 400));
+    // Ensure the thumbnail URL is provided
+    if (!data.thumbnail) {
+      return next(new ErrorHandler("Thumbnail is required", 400));
     }
+
+    // Upload thumbnail to Cloudinary
+    const myCloud = await cloudinary.v2.uploader.upload(data.thumbnail, {
+      folder: "courses",
+    });
+
+    // Update data with Cloudinary thumbnail URL and public_id
+    data.thumbnail = {
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
+    };
+
+    // Call the function to create the course
+    await createCourse(req, res, next);
+  } catch (error: any) {
+    console.error(error); // Improved logging for debugging
+    return next(new ErrorHandler(error.message, 400));
   }
-);
+};
 
 // Edit Course
 export const editCourse = catchAsyncErrors(

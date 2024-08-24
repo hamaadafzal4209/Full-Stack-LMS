@@ -198,11 +198,16 @@ export const logoutUser = catchAsyncErrors(
 export const updateAccessToken = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refresh_token = (await req.cookies.refresh_token) as string;
+      const refresh_token = req.cookies.refresh_token as string;
+      if (!refresh_token) {
+        return next(new ErrorHandler("No refresh token provided", 401));
+      }
+
       const decoded = jwt.verify(
         refresh_token,
         process.env.REFRESH_TOKEN as string
       ) as JwtPayload;
+
       if (!decoded) {
         return next(new ErrorHandler("Invalid refresh token", 400));
       }
@@ -210,7 +215,7 @@ export const updateAccessToken = catchAsyncErrors(
       const session = await redis.get(decoded.id as string);
       if (!session) {
         return next(
-          new ErrorHandler("Please login to access this resources", 400)
+          new ErrorHandler("Please login to access this resource", 401)
         );
       }
 
@@ -219,31 +224,30 @@ export const updateAccessToken = catchAsyncErrors(
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
-        {
-          expiresIn: "5m",
-        }
+        { expiresIn: "5m" }
       );
-      const refreshToken = jwt.sign(
+      const newRefreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN as string,
-        {
-          expiresIn: "7d",
-        }
+        { expiresIn: "7d" }
       );
 
-      req.user = user;
-
       res.cookie("access_token", accessToken, accessTokenOptions);
-      res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+      res.cookie("refresh_token", newRefreshToken, refreshTokenOptions);
 
       await redis.set(user._id, JSON.stringify(user), "EX", 604800);
 
-      next();
+      res.status(200).json({
+        accessToken,
+        refreshToken: newRefreshToken,
+        user,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
 );
+
 
 // Get user information
 export const getUserInfo = catchAsyncErrors(
