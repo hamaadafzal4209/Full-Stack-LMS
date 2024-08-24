@@ -1,14 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CourseInformation from "./CourseInformation";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
+import { useCreateCourseMutation } from "@/app/redux/features/courses/coursesApi";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
 
 type Props = {};
 
 const CreateCourse = (props: Props) => {
+  const [createCourse, { isLoading, error, isSuccess }] =
+    useCreateCourseMutation();
   const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState({
     name: "",
@@ -41,21 +46,31 @@ const CreateCourse = (props: Props) => {
   ]);
   const [courseData, setCourseData] = useState({});
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Course Created Successfully");
+      redirect("/admin/courses");
+    }
+    if (error && "data" in error) {
+      const errorData = error as any;
+      toast.error(errorData.data.message);
+    }
+  }, [error, isSuccess]);
+
   const handleSubmit = async () => {
-    // format benefit array
     const formattedBenefits = benefits.map((benefit) => ({
       title: benefit.title,
     }));
-    // format prerequisites array
-    const formattedPrerequisites = prerequisites.map((prerequisite) => ({
-      title: prerequisite.title,
+    const formattedPrerequisites = prerequisites.map((prereq) => ({
+      title: prereq.title,
     }));
-    // format course content array
+
     const formattedCourseContentData = courseContentData.map(
       (courseContent) => ({
         videoUrl: courseContent.videoUrl,
         title: courseContent.title,
         description: courseContent.description,
+        videoLength: courseContent.videoLength,
         videoSection: courseContent.videoSection,
         links: courseContent.links.map((link) => ({
           title: link.title,
@@ -64,8 +79,6 @@ const CreateCourse = (props: Props) => {
         suggestions: courseContent.suggestions,
       })
     );
-
-    // prepare our data object
 
     const data = {
       name: courseInfo.name,
@@ -85,9 +98,14 @@ const CreateCourse = (props: Props) => {
     setCourseData(data);
   };
 
-  const handleCourseCreate = () => {
-    //
+  const handleCourseCreate = async (e: any) => {
+    const data = courseData;
+    if (!isLoading) {
+      await createCourse(data);
+    }
   };
+
+  console.log(courseData);
 
   return (
     <div className="w-full min-h-screen flex">
@@ -125,6 +143,7 @@ const CreateCourse = (props: Props) => {
             setActive={setActive}
             courseData={courseData}
             handleCourseCreate={handleCourseCreate}
+            isLoading={isLoading}
           />
         )}
       </div>

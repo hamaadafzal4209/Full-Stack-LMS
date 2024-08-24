@@ -9,6 +9,7 @@ type Props = {
   setActive: (active: number) => void;
   courseData: any;
   handleCourseCreate: any;
+  isLoading: boolean;
 };
 
 const CoursePreview: FC<Props> = ({
@@ -16,7 +17,13 @@ const CoursePreview: FC<Props> = ({
   setActive,
   courseData,
   handleCourseCreate,
+  isLoading,
 }) => {
+  // Debugging
+  console.log(courseData);
+
+  if (isLoading) return <p>Loading...</p>;
+
   const discountPercentage =
     ((courseData?.estimatedPrice - courseData?.price) /
       courseData?.estimatedPrice) *
@@ -28,7 +35,7 @@ const CoursePreview: FC<Props> = ({
     setActive(active - 1);
   };
 
-  const [rating, setRating] = useState<number>(2.5);
+  const [rating, setRating] = useState(0);
 
   const handleRatingChange = (newRating: number) => {
     setRating(newRating);
@@ -65,7 +72,7 @@ const CoursePreview: FC<Props> = ({
 
         <div className="flex items-center mt-4">
           <button
-            className={`${styles.button} !w-[180px] !bg-red-600 cursor-not-allowed`}
+            className={`${styles.button} !w-[180px] !bg-red-600 cursor-not-allowed dark:text-white`}
             disabled
           >
             Buy Now {courseData?.price}$
@@ -78,7 +85,7 @@ const CoursePreview: FC<Props> = ({
             placeholder="Discount code..."
             className={`${styles.input} w-[50%] ml-3`}
           />
-          <button className={`${styles.button} !w-[120px] ml-4`}>Apply</button>
+          <button className={`${styles.button} !w-[120px] ml-4 dark:text-white`}>Apply</button>
         </div>
 
         <ul className="mt-4 space-y-2 text-lg">
@@ -90,7 +97,7 @@ const CoursePreview: FC<Props> = ({
       </div>
 
       <div className="w-full mt-10">
-        <h1 className="text-[25px] font-bold">{courseData?.name}</h1>
+        <h1 className="text-[25px] font-bold">{courseData?.name || "Course Name Not Available"}</h1>
         <div className="flex items-center justify-between pt-3">
           <div className="flex items-center">
             <Ratings value={rating} onChange={handleRatingChange} />
@@ -132,7 +139,7 @@ const CoursePreview: FC<Props> = ({
         <div className="mt-10">
           <h1 className="text-[25px] font-bold">Course Details</h1>
           <p className="text-[18px] mt-4 whitespace-pre-line">
-            {courseData?.description}
+            {courseData?.description || "Course description not available."}
           </p>
         </div>
       </div>
@@ -145,10 +152,11 @@ const CoursePreview: FC<Props> = ({
           Prev
         </button>
         <button
-          className="w-full md:w-[180px] h-[40px] bg-[#37a39a] text-white rounded hover:bg-[#2d8c7f]"
+          className="w-full md:w-[180px] h-[40px] bg-[#37a39a] text-white rounded hover:bg-[#2d8c7f] "
           onClick={createCourse}
+          disabled={isLoading}
         >
-          Create
+          {isLoading ? 'Creating...' : 'Create'}
         </button>
       </div>
     </div>

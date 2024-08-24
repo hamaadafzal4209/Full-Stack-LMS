@@ -1,9 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
 import { styles } from "@/app/styles/style";
+import Image from "next/image";
 import React, { FC, useState } from "react";
+import toast from "react-hot-toast";
 
 type Props = {
-  courseInfo: any;
+  courseInfo: {
+    name: string;
+    description: string;
+    price: string;
+    estimatedPrice?: string;
+    tags: string;
+    level: string;
+    demoUrl?: string;
+    thumbnail?: string;
+  };
   setCourseInfo: (courseInfo: any) => void;
   active: number;
   setActive: (active: number) => void;
@@ -17,47 +27,53 @@ const CourseInformation: FC<Props> = ({
 }) => {
   const [dragging, setDragging] = useState(false);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Check if thumbnail is provided
+    if (!courseInfo.thumbnail) {
+      toast.error("Please upload a thumbnail image.");
+      return;
+    }
     setActive(active + 1);
   };
 
-  const handleFileChange = (e: any) => {
-    const file = e.target.files[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-
-      reader.onload = (e: any) => {
+      reader.onload = (e: ProgressEvent<FileReader>) => {
         if (reader.readyState === 2) {
-          setCourseInfo({ ...courseInfo, thumbnail: e.target.result });
+          setCourseInfo({
+            ...courseInfo,
+            thumbnail: e.target?.result as string,
+          });
         }
       };
-
+      reader.onerror = () => toast.error("Error reading file.");
       reader.readAsDataURL(file);
     }
   };
 
-  const handleDragOver = (e: any) => {
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(true);
   };
 
-  const handleDragLeave = (e: any) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(false);
   };
 
-  const handleDrop = (e: any) => {
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
     setDragging(false);
-
     const file = e.dataTransfer.files[0];
     if (file) {
       const reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        setCourseInfo({ ...courseInfo, thumbnail: e.target.result });
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        setCourseInfo({ ...courseInfo, thumbnail: e.target?.result as string });
       };
+      reader.onerror = () => toast.error("Error reading file.");
       reader.readAsDataURL(file);
     }
   };
@@ -70,11 +86,11 @@ const CourseInformation: FC<Props> = ({
             Course Name
           </label>
           <input
-            type="name"
-            name=""
+            type="text"
+            name="name"
             required
             value={courseInfo.name}
-            onChange={(e: any) =>
+            onChange={(e) =>
               setCourseInfo({ ...courseInfo, name: e.target.value })
             }
             id="name"
@@ -88,10 +104,10 @@ const CourseInformation: FC<Props> = ({
             Course Description
           </label>
           <textarea
-            name=""
+            name="description"
             required
             value={courseInfo.description}
-            onChange={(e: any) =>
+            onChange={(e) =>
               setCourseInfo({ ...courseInfo, description: e.target.value })
             }
             id="description"
@@ -109,10 +125,10 @@ const CourseInformation: FC<Props> = ({
             </label>
             <input
               type="number"
-              name=""
+              name="price"
               required
               value={courseInfo.price}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setCourseInfo({ ...courseInfo, price: e.target.value })
               }
               id="price"
@@ -126,9 +142,9 @@ const CourseInformation: FC<Props> = ({
             </label>
             <input
               type="number"
-              name=""
-              value={courseInfo.estimatedPrice}
-              onChange={(e: any) =>
+              name="estimatedPrice"
+              value={courseInfo.estimatedPrice || ""}
+              onChange={(e) =>
                 setCourseInfo({ ...courseInfo, estimatedPrice: e.target.value })
               }
               id="estimatedPrice"
@@ -145,10 +161,10 @@ const CourseInformation: FC<Props> = ({
             </label>
             <input
               type="text"
-              name=""
+              name="tags"
               required
               value={courseInfo.tags}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setCourseInfo({ ...courseInfo, tags: e.target.value })
               }
               id="tags"
@@ -165,10 +181,10 @@ const CourseInformation: FC<Props> = ({
             </label>
             <input
               type="text"
-              name=""
+              name="level"
               required
               value={courseInfo.level}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setCourseInfo({ ...courseInfo, level: e.target.value })
               }
               id="level"
@@ -182,9 +198,9 @@ const CourseInformation: FC<Props> = ({
             </label>
             <input
               type="text"
-              name=""
-              value={courseInfo.demoUrl}
-              onChange={(e: any) =>
+              name="demoUrl"
+              value={courseInfo.demoUrl || ""}
+              onChange={(e) =>
                 setCourseInfo({ ...courseInfo, demoUrl: e.target.value })
               }
               id="demoUrl"
@@ -212,14 +228,16 @@ const CourseInformation: FC<Props> = ({
             onDrop={handleDrop}
           >
             {courseInfo.thumbnail ? (
-              <img
+              <Image
                 src={courseInfo.thumbnail}
                 alt="thumbnail"
                 className="max-h-full w-full object-cover"
+                width={100}
+                height={100}
               />
             ) : (
               <span className="text-black dark:text-white">
-                Drag and drop your thumbnail here or click to the browser
+                Drag and drop your thumbnail here or click to browse
               </span>
             )}
           </label>

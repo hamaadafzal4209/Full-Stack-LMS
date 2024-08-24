@@ -30,24 +30,24 @@ const CourseData: FC<Props> = ({
     setBenefits([...benefits, { title: "" }]);
   };
 
-  const handlePrerequisitesChange = (index: number, value: string) => {
-    const updatedBenefits = [...prerequisites];
-    updatedBenefits[index].title = value;
-    setPrerequisites(updatedBenefits);
+  const handlePrerequisiteChange = (index: number, value: string) => {
+    const updatedPrerequisites = [...prerequisites];
+    updatedPrerequisites[index].title = value;
+    setPrerequisites(updatedPrerequisites);
   };
 
-  const handleAddPrerequisites = () => {
+  const handleAddPrerequisite = () => {
     setPrerequisites([...prerequisites, { title: "" }]);
   };
 
-  const prevButton = () => {
+  const handlePrev = () => {
     setActive(active - 1);
   };
 
-  const handleOptions = () => {
+  const handleNext = () => {
     if (
-      benefits[benefits.length - 1].title !== "" &&
-      prerequisites[prerequisites.length - 1].title !== ""
+      benefits.every((benefit) => benefit.title.trim() !== "") &&
+      prerequisites.every((prerequisite) => prerequisite.title.trim() !== "")
     ) {
       setActive(active + 1);
     } else {
@@ -57,7 +57,7 @@ const CourseData: FC<Props> = ({
 
   return (
     <div>
-      {/* benefits */}
+      {/* Benefits */}
       <div>
         <label htmlFor="benefit" className={`${styles.label} text-[20px]`}>
           What are the benefits for students in this course?
@@ -65,7 +65,7 @@ const CourseData: FC<Props> = ({
         {benefits.map((benefit, index) => (
           <input
             type="text"
-            key={index}
+            key={`benefit-${index}`}
             name="benefits"
             className={`${styles.input} my-2`}
             placeholder="You will be able to build a full stack LMS Platform..."
@@ -80,26 +80,30 @@ const CourseData: FC<Props> = ({
           className="text-black dark:text-white"
         />
       </div>
-      {/* prerequisites */}
+
+      {/* Prerequisites */}
       <div>
-        <label htmlFor="benefit" className={`${styles.label} text-[20px]`}>
+        <label
+          htmlFor="prerequisites"
+          className={`${styles.label} text-[20px]`}
+        >
           What are the prerequisites for this course?
         </label>
-        {prerequisites.map((prerequisites, index) => (
+        {prerequisites.map((prerequisite, index) => (
           <input
             type="text"
-            key={index}
+            key={`prerequisite-${index}`}
             className={`${styles.input} my-2`}
-            placeholder="You need basic knowledge of MERN stck"
+            placeholder="You need basic knowledge of MERN stack"
             required
             name="prerequisites"
-            value={prerequisites.title}
-            onChange={(e) => handlePrerequisitesChange(index, e.target.value)}
+            value={prerequisite.title}
+            onChange={(e) => handlePrerequisiteChange(index, e.target.value)}
           />
         ))}
         <AddCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
-          onClick={handleAddPrerequisites}
+          onClick={handleAddPrerequisite}
           className="text-black dark:text-white"
         />
       </div>
@@ -107,13 +111,13 @@ const CourseData: FC<Props> = ({
       <div className="flex w-full items-center justify-between gap-4">
         <div
           className="w-full md:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
-          onClick={() => prevButton()}
+          onClick={handlePrev}
         >
           Prev
         </div>
         <div
           className="w-full md:w-[180px] flex items-center justify-center h-10 bg-cyan-500 text-white text-center mt-8 rounded cursor-pointer"
-          onClick={() => handleOptions()}
+          onClick={handleNext}
         >
           Next
         </div>
