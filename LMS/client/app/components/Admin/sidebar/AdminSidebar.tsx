@@ -1,7 +1,10 @@
-"use client";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { styles } from "@/app/styles/style";
+import Image from "next/image";
+import defaultAvatar from "../../../../public/assets/Profile.png";
 import {
-  ArrowBackIos,
-  ArrowForwardIos,
   BarChartOutlined,
   ExitToApp,
   Group,
@@ -17,325 +20,178 @@ import {
   Web,
   Wysiwyg,
 } from "@mui/icons-material";
-import { Box, IconButton, Typography } from "@mui/material";
-import { useTheme } from "next-themes";
-import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
-import "react-pro-sidebar/dist/css/styles.css";
-import { useSelector } from "react-redux";
-import avatarDefault from "../../../../public/assets/Profile.png";
 
 type Props = {};
 
-interface itemProps {
-  title: string;
-  to: string;
-  icon: JSX.Element;
-  selected: string;
-  setSelected: any;
-}
-
-const Item: React.FC<itemProps> = ({
-  title,
-  to,
-  icon,
-  selected,
-  setSelected,
-}) => {
-  return (
-    <MenuItem
-      active={selected === title}
-      onClick={() => setSelected(title)}
-      icon={icon}
-      className={`${
-        selected === title ? "bg-[#1E2A53] dark:bg-[#4A5A88]" : "bg-transparent"
-      } hover:bg-[#162B59] dark:hover:bg-[#3C4A74] rounded-md my-1.5 mr-3`}
-    >
-      <Typography className="!font-Poppins">{title}</Typography>
-      <Link href={to} />
-    </MenuItem>
-  );
-};
-
 const AdminSidebar = (props: Props) => {
   const { user } = useSelector((state: any) => state.auth);
-  const [logout, setLogout] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
-  const [mounted, setMounted] = useState(false);
-  const { theme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const logoutHandler = () => {
-    setLogout(true);
-  };
+  const [active,setActive] = useState(0);
 
   return (
-    <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: theme === "dark" ? "#134E4A" : "#ffffff !important",
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#ffffff !important",
-        },
-        "& .pro-inner-item.active": {
-          color: "#ffffff !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 0px 5px 20px !important",
-          opacity: 1,
-        },
-        "& .pro-menu-item": {
-          color: `${theme !== "dark" && "#000"}`,
-        },
-      }}
-      className={theme === "dark" ? "dark:bg-cyan-950" : "bg-white"}
-    >
-      <ProSidebar
-        collapsed={isCollapsed}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          height: "100vh",
-          width: isCollapsed ? "0%" : " 16%",
-        }}
+    <div className="w-full border-r-4 p-4 h-screen max-h-screen sticky top-0 overflow-y-auto">
+      {/* name and collapse icon */}
+      <div
+        className={`flex items-center gap-4 justify-between ${isCollapsed ? "mb-2" : "mb-0"}`}
       >
-        <Menu iconShape="square">
-          {/* Logo */}
-          <MenuItem
-            className="text-black dark:text-white hover:text-black"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <ArrowForwardIos /> : undefined}
-          >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Link href="/">
-                  <Typography
-                    variant="h5"
-                    className="!text-6 font-Poppins uppercase dark:text-white text-black"
-                  >
-                    ELearning
-                  </Typography>
-                </Link>
-                <IconButton
-                  onClick={() => setIsCollapsed(isCollapsed)}
-                  className="inline-block"
-                >
-                  <ArrowBackIos className="text-black dark:text-[#ffffff]" />
-                </IconButton>
-              </Box>
-            )}
-          </MenuItem>
-
-          {/* Admin Info */}
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <Image
-                  alt="Profile Photo"
-                  width={100}
-                  height={100}
-                  src={user.avatar ? user.avatar.url : avatarDefault}
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: "50%",
-                    border: "3px solid cyan",
-                  }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h6"
-                  className="text-black !text-2xl !pt-4 dark:text-white"
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  className=" text-black !text-sm dark:text-white capitalize"
-                >
-                  ~ {user.role}
-                </Typography>
-              </Box>
-            </Box>
+        {!isCollapsed && <p className={`${styles.title}`}>Elearning</p>}
+        <div className="mx-auto">
+          {isCollapsed ? (
+            <div className="cursor-pointer hover:bg-indigo-900 bg-indigo-800 p-2 rounded-full text-white flex items-center justify-center">
+              <FaAngleRight
+                size={24}
+                onClick={() => setIsCollapsed(!isCollapsed)}
+              />
+            </div>
+          ) : (
+            <div className="cursor-pointer hover:bg-indigo-900 bg-indigo-800 p-2 rounded-full text-white flex items-center justify-center">
+              <FaAngleLeft
+                size={24}
+                onClick={() => setIsCollapsed(!isCollapsed)}
+              />
+            </div>
           )}
-
-          {/* Menu Items */}
-          <Box
-            paddingLeft={isCollapsed ? undefined : "10%"}
-            marginLeft={isCollapsed ? "0px" : undefined}
-          >
-            <Item
-              title="Dashboard"
-              to="/admin"
-              icon={<HomeOutlined />}
-              selected={selected}
-              setSelected={setSelected}
+        </div>
+      </div>
+      {/* admin profile image */}
+      <div>
+        {!isCollapsed && (
+          <div className="flex items-center justify-center my-2">
+            <Image
+              width={96}
+              height={96}
+              src={user?.avatar ? user?.avatar.url : defaultAvatar}
+              alt="Profile Image"
+              className="rounded-full w-24 h-24 border-2 border-cyan-900 dark:border-cyan-600"
             />
+          </div>
+        )}
+      </div>
+      {/* admin name and role */}
+      {!isCollapsed && (
+        <div className="text-center text-black dark:text-white my-2">
+          <h4 className="text-[22px]">{user.name}</h4>
+          <h4 className="text-sm">~{user.role}</h4>
+        </div>
+      )}
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Data"}
-            </Typography>
+      {/* main dashboard button */}
 
-            <Item
-              title="Users"
-              to="/admin/users"
-              icon={<Group />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 0 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <HomeOutlined />
+          {!isCollapsed && <p className="whitespace-nowrap">DashBoard</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Invoices"
-              to="/admin/invoices"
-              icon={<ReceiptOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Data</p>}
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Content"}
-            </Typography>
+      <Link href="/admin/users">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 1 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <Group />
+          {!isCollapsed && <p className="whitespace-nowrap">Users</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Create Course"
-              to="/admin/create-course"
-              icon={<VideoCall />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/invoices">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 2 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <ReceiptOutlined />
+          {!isCollapsed && <p className="whitespace-nowrap">Invoices</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Live Courses"
-              to="/admin/courses"
-              icon={<OndemandVideo />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Content</p>}
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Customization"}
-            </Typography>
+      <Link href="/admin/create-course">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 3 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <VideoCall />
+          {!isCollapsed && <p className="whitespace-nowrap">Create Course</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Hero"
-              to="/admin/hero"
-              icon={<Web />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/courses">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 4 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <OndemandVideo />
+          {!isCollapsed && <p className="whitespace-nowrap">Live Courses</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="FAQ"
-              to="/admin/faq"
-              icon={<Quiz />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Customization</p>}
 
-            <Item
-              title="Categories"
-              to="/admin/categories"
-              icon={<Wysiwyg />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/hero">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 5 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <Web />
+          {!isCollapsed && <p className="whitespace-nowrap">Hero</p>}
+        </div>
+      </Link>
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Controllers"}
-            </Typography>
+      <Link href="/admin/faq">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 6 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <Quiz />
+          {!isCollapsed && <p className="whitespace-nowrap">FAQ</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Manage Teams"
-              to="/admin/team"
-              icon={<PeopleOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/categories">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 7 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <Wysiwyg />
+          {!isCollapsed && <p className="whitespace-nowrap">Categories</p>}
+        </div>
+      </Link>
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Analytics"}
-            </Typography>
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Controllers</p>}
 
-            <Item
-              title="Courses Analytics"
-              to="/admin/courses-analytics"
-              icon={<BarChartOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/team">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 8 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <PeopleOutlined />
+          {!isCollapsed && <p className="whitespace-nowrap">Manage Teams</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Orders Analytics"
-              to="/admin/orders-analytics"
-              icon={<MapOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Courses Analytics</p>}
 
-            <Item
-              title="Users Analytics"
-              to="/admin/users-analytics"
-              icon={<ManageHistory />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/courses-analytics">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 9 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <BarChartOutlined />
+          {!isCollapsed && (
+            <p className="whitespace-nowrap">Courses Analytics</p>
+          )}
+        </div>
+      </Link>
 
-            <Typography
-              variant="h5"
-              className=" !text-[18px] text-black dark:text-white capitalize !font-[400]"
-            >
-              {!isCollapsed && "Extras"}
-            </Typography>
+      <Link href="/admin/orders-analytics">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 10 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <MapOutlined />
+          {!isCollapsed && (
+            <p className="whitespace-nowrap">Orders Analytics</p>
+          )}
+        </div>
+      </Link>
 
-            <Item
-              title="Settings"
-              to="/admin/settings"
-              icon={<Settings />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+      <Link href="/admin/users-analytics">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 11 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <ManageHistory />
+          {!isCollapsed && <p className="whitespace-nowrap">Users Analytics</p>}
+        </div>
+      </Link>
 
-            <Item
-              title="Logout"
-              to="/"
-              icon={<ExitToApp />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </Box>
-        </Menu>
-      </ProSidebar>
-    </Box>
+      {!isCollapsed && <p className="text-lg py-1 text-black dark:text-white font-semibold">Extras</p>}
+
+      <Link href="/admin/settings">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 12 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <Settings />
+          {!isCollapsed && <p className="whitespace-nowrap">Settings</p>}
+        </div>
+      </Link>
+
+      <Link href="/">
+        <div className={`px-5 py-3 text-left rounded-md w-full  ${active === 13 ? " bg-indigo-900 text-white" : "bg-transparent text-black hover:text-white dark:text-white"} hover:bg-indigo-900 font-semibold flex items-center justify-start gap-2`}>
+          <ExitToApp />
+          {!isCollapsed && <p className="whitespace-nowrap">Logout</p>}
+        </div>
+      </Link>
+    </div>
   );
 };
 
