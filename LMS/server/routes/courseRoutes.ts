@@ -79,10 +79,6 @@ courseRouter.delete(
   authorizeRole("admin"),
   deleteCourse
 );
-courseRouter.post(
-  "/getVdoChipherOTP",
-  isAuthenticated,
-  generateVideoUrl
-)
+courseRouter.post("/getVdoCipherOtp", generateVideoUrl);
 
 export default courseRouter;
