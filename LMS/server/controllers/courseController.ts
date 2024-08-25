@@ -20,6 +20,8 @@ export const uploadCourse = async (
   try {
     const data = req.body;
 
+    console.log("Incoming course data:", req.body); 
+
     // Ensure the thumbnail URL is provided
     if (!data.thumbnail) {
       return next(new ErrorHandler("Thumbnail is required", 400));

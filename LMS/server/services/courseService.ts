@@ -15,6 +15,7 @@ export const createCourse = async (
       course: course,
     });
   } catch (error: any) {
+    console.error("Error creating course:", error);
     return next(new ErrorHandler(error.message, 400));
   }
 };

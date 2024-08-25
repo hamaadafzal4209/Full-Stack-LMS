@@ -21,8 +21,8 @@ const CoursePreview: FC<Props> = ({
   isLoading,
 }) => {
   // Debugging
-  console.log(courseData);
-
+  console.log("Course Data in Preview:", courseData)
+  
   const discountPercentage =
     ((courseData?.estimatedPrice - courseData?.price) /
       courseData?.estimatedPrice) *
