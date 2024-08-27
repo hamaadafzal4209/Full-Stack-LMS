@@ -20,7 +20,8 @@ export const uploadCourse = async (
   try {
     const data = req.body;
 
-    console.log("Incoming course data:", req.body); 
+    // Log the incoming request body for debugging
+    console.log("Incoming course data:", data);
 
     // Ensure the thumbnail URL is provided
     if (!data.thumbnail) {
@@ -32,6 +33,9 @@ export const uploadCourse = async (
       folder: "courses",
     });
 
+    // Log the Cloudinary response for debugging
+    console.log("Cloudinary upload response:", myCloud);
+
     // Update data with Cloudinary thumbnail URL and public_id
     data.thumbnail = {
       public_id: myCloud.public_id,
@@ -39,9 +43,9 @@ export const uploadCourse = async (
     };
 
     // Call the function to create the course
-    await createCourse(req, res, next);
+    await createCourse(data, res, next); // Pass 'data' instead of 'req'
   } catch (error: any) {
-    console.error(error); // Improved logging for debugging
+    console.error("Error in uploadCourse:", error);
     return next(new ErrorHandler(error.message, 400));
   }
 };
