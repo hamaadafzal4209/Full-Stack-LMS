@@ -11,28 +11,28 @@ export const apiSlice = createApi({
       query: () => ({
         url: "refresh",
         method: "GET",
-        credentials: "include",
+        credentials: "include" as const,
       }),
     }),
     loadUser: builder.query({
       query: () => ({
         url: "me",
         method: "GET",
-        credentials: "include",
+        credentials: "include" as const,
       }),
-      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+      async onQueryStarted(arg, {queryFulfilled, dispatch}){
         try {
           const result = await queryFulfilled;
           dispatch(
             userLoggedIn({
               accessToken: result.data.accessToken,
-              user: result.data.user,
+              user: result.data.user
             })
           );
         } catch (error: any) {
-          console.log(error);
+          console.log(error)
         }
-      },
+      }
     }),
   }),
 });

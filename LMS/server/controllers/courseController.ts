@@ -12,43 +12,27 @@ import ejs from "ejs";
 import notificationModel from "../model/notificationModel";
 import axios from "axios";
 
-export const uploadCourse = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const data = req.body;
+// Upload new course
+export const uploadCourse = catchAsyncErrors(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = req.body;
+      const thumbnail = data.thumbnail;
+      const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
+        folder: "courses",
+      });
 
-    // Log the incoming request body for debugging
-    console.log("Incoming course data:", data);
+      data.thumbnail = {
+        public_id: myCloud.public_id,
+        url: myCloud.secure_url,
+      };
 
-    // Ensure the thumbnail URL is provided
-    if (!data.thumbnail) {
-      return next(new ErrorHandler("Thumbnail is required", 400));
+      createCourse(data, res, next);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
     }
-
-    // Upload thumbnail to Cloudinary
-    const myCloud = await cloudinary.v2.uploader.upload(data.thumbnail, {
-      folder: "courses",
-    });
-
-    // Log the Cloudinary response for debugging
-    console.log("Cloudinary upload response:", myCloud);
-
-    // Update data with Cloudinary thumbnail URL and public_id
-    data.thumbnail = {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
-    };
-
-    // Call the function to create the course
-    await createCourse(data, res, next); // Pass 'data' instead of 'req'
-  } catch (error: any) {
-    console.error("Error in uploadCourse:", error);
-    return next(new ErrorHandler(error.message, 400));
   }
-};
+);
 
 // Edit Course
 export const editCourse = catchAsyncErrors(

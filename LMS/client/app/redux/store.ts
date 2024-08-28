@@ -1,4 +1,3 @@
-"use client";
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/api/apiSlice";
 import authSlice from "./features/auth/authSlice";
@@ -14,16 +13,14 @@ export const store = configureStore({
     getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
-// call the load token on every page load
+// Ensure the token is loaded on app initialization
 const initializeApp = async () => {
   try {
     await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}));
     await store.dispatch(apiSlice.endpoints.loadUser.initiate({}));
-  } catch (error) {
+  } catch (error: unknown) {
     console.log("Initialization error:", error);
-    toast.error(error);
   }
 };
 
 initializeApp();
-

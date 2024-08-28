@@ -106,7 +106,7 @@ const CreateCourse: React.FC<Props> = () => {
     }
   };
 
-  console.log(courseData)
+  console.log(courseData);
 
   return (
     <div className="w-full min-h-screen flex">
