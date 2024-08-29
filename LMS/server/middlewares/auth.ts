@@ -9,32 +9,25 @@ export const isAuthenticated = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.access_token as string;
     if (!accessToken) {
-      return next(
-        new ErrorHandler("Please login to access this resource.", 400)
-      );
+      return next(new ErrorHandler("No access token provided. Please log in.", 401));
     }
 
-    const decoded = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN as string
-    ) as JwtPayload;
-    if (!decoded) {
-      return next(new ErrorHandler("Access token is not valid", 400));
+    try {
+      const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN as string) as JwtPayload;
+
+      const user = await redis.get(decoded.id);
+      if (!user) {
+        return next(new ErrorHandler("Session expired. Please log in again.", 401));
+      }
+
+      req.user = JSON.parse(user);
+      next();
+    } catch (error) {
+      return next(new ErrorHandler("Invalid or expired access token. Please log in again.", 401));
     }
-
-    const user = await redis.get(decoded.id);
-
-    if (!user) {
-      return next(
-        new ErrorHandler("Please login to access this resource", 400)
-      );
-    }
-
-    req.user = JSON.parse(user);
-
-    next();
   }
 );
+
 
 // Authorize user role
 export const authorizeRole = (...roles: string[]) => {
