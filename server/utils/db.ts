@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 require("dotenv").config();
 
-const dbUrl: string = process.env.DB_URL || "";
+const dbUrl: string = "mongodb://localhost:27017/LMS";
 
 export const connectDb = async () => {
   try {

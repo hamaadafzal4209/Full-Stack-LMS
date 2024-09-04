@@ -389,46 +389,50 @@ export const updateProfilePicture = catchAsyncErrors(
     try {
       const { avatar } = req.body as IUpdateAvatar;
       const userId = req.user?._id;
+
+      if (!userId) {
+        return next(new ErrorHandler("User not authenticated", 401));
+      }
+
       const user = await userModel.findById(userId);
 
       if (!user) {
         return next(new ErrorHandler("Invalid User", 400));
       }
 
-      if (avatar && user) {
-        if (user?.avatar?.public_id) {
-          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
-
-          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-            folder: "avatars",
-            width: 150,
-          });
-
-          user.avatar = {
-            public_id: myCloud.public_id,
-            url: myCloud.secure_url,
-          };
-        } else {
-          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-            folder: "avatars",
-            width: 150,
-          });
-
-          user.avatar = {
-            public_id: myCloud.public_id,
-            url: myCloud.secure_url,
-          };
+      if (avatar) {
+        // Destroy old avatar if it exists
+        if (user.avatar?.public_id) {
+          await cloudinary.v2.uploader.destroy(user.avatar.public_id);
         }
+
+        // Upload new avatar
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+          folder: "avatars",
+          width: 150,
+          crop: "scale",
+        });
+
+        // Update user with new avatar details
+        user.avatar = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
+
+        // Save updated user to the database
+        await user.save();
+
+        // Update Redis cache
+        await redis.set(userId.toString(), JSON.stringify(user));
+
+        res.status(200).json({
+          success: true,
+          message: "Avatar updated successfully",
+          user,
+        });
+      } else {
+        return next(new ErrorHandler("Avatar is required", 400));
       }
-
-      await user?.save();
-      await redis.set(userId, JSON.stringify(user));
-
-      res.status(201).json({
-        success: true,
-        message: "Avatar saved successfully",
-        user: user,
-      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
