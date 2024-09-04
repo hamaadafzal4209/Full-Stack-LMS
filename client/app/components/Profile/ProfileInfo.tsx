@@ -1,5 +1,3 @@
-"use client";
-/* eslint-disable react-hooks/exhaustive-deps */
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import { AiOutlineCamera } from "react-icons/ai";
@@ -18,10 +16,9 @@ type Props = {
 
 const ProfileInfo: FC<Props> = ({ user, avatar }) => {
   const [name, setName] = useState(user?.name || "");
-  const [updateAvatar, { isSuccess: avatarSuccess, error: avatarError }] =
-    useUpdateAvatarMutation();
-  const [updateUser, { isSuccess: userSuccess, error: userError }] =
-    useUpdateUserMutation();
+  const [updateAvatar, { isSuccess: avatarSuccess, error: avatarError, data: avatarData }] = useUpdateAvatarMutation();
+  const [updateUser, { isSuccess: userSuccess, error: userError, data: userData }] = useUpdateUserMutation();
+  
   const [loadUser, setLoadUser] = useState(false);
 
   const imageHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,12 +39,13 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
     if (avatarSuccess || userSuccess) {
       setLoadUser(true);
       toast.success("Profile updated successfully!");
+      console.log("Update success:", { avatarSuccess, userSuccess });
     }
     if (avatarError || userError) {
       toast.error("Failed to update profile.");
-      console.log(avatarError || userError);
+      console.log("Update error:", avatarError || userError);
     }
-  }, [avatarSuccess, avatarError, userSuccess, userError]);
+  }, [avatarSuccess, avatarError, userSuccess, userError]);  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,10 +81,7 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
       <div className="w-full px-4 md:px-10">
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="flex flex-col">
-            <label
-              className="block text-black dark:text-white mb-1"
-              htmlFor="name"
-            >
+            <label className="block text-black dark:text-white mb-1" htmlFor="name">
               Full Name
             </label>
             <input
@@ -99,10 +94,7 @@ const ProfileInfo: FC<Props> = ({ user, avatar }) => {
             />
           </div>
           <div className="flex flex-col">
-            <label
-              className="block text-black dark:text-white mb-1 mt-4"
-              htmlFor="email"
-            >
+            <label className="block text-black dark:text-white mb-1 mt-4" htmlFor="email">
               Email
             </label>
             <input
