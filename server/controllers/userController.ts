@@ -163,10 +163,22 @@ export const loginUser = catchAsyncErrors(
       const isPasswordMatch = await user.comparePassword(password);
 
       if (!isPasswordMatch) {
-        return next(new ErrorHandler("Wrong Cradientials", 400));
+        return next(new ErrorHandler("Wrong Credentials", 400));
       }
 
-      sendToken(user, 200, res);
+      // Generate tokens
+      const accessToken = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN as string, { expiresIn: "5m" });
+      const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN as string, { expiresIn: "7d" });
+
+      // Send tokens
+      res.cookie("access_token", accessToken, accessTokenOptions);
+      res.cookie("refresh_token", refreshToken, refreshTokenOptions);
+
+      res.status(200).json({
+        accessToken,
+        refreshToken,
+        user,
+      });
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -198,13 +210,13 @@ export const logoutUser = catchAsyncErrors(
 export const updateAccessToken = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const refresh_token = req.cookies.refresh_token as string;
-      if (!refresh_token) {
+      const refreshToken = req.cookies.refresh_token as string;
+      if (!refreshToken) {
         return next(new ErrorHandler("No refresh token provided", 401));
       }
 
       const decoded = jwt.verify(
-        refresh_token,
+        refreshToken,
         process.env.REFRESH_TOKEN as string
       ) as JwtPayload;
 
@@ -293,22 +305,24 @@ export const updateUserInfo = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { name, email } = req.body as IUpdateUserInfo;
-
       const userId = req.user?._id;
 
       if (!userId) {
+        console.error("User ID not found in request");
         return next(new ErrorHandler("User not authenticated", 401));
       }
 
       const user = await userModel.findById(userId);
 
       if (!user) {
+        console.error("User not found in database");
         return next(new ErrorHandler("User not found", 404));
       }
 
       if (email) {
         const isEmailExist = await userModel.findOne({ email });
         if (isEmailExist) {
+          console.error("Email already exists");
           return next(new ErrorHandler("Email already exists", 409));
         } else {
           user.email = email;
@@ -321,6 +335,8 @@ export const updateUserInfo = catchAsyncErrors(
 
       await user.save();
 
+      console.log("User updated successfully:", user);
+
       await redis.set(userId.toString(), JSON.stringify(user));
 
       res.status(200).json({
@@ -328,10 +344,12 @@ export const updateUserInfo = catchAsyncErrors(
         user,
       });
     } catch (error: any) {
+      console.error("Error updating user info:", error.message);
       return next(new ErrorHandler(error.message, 500));
     }
   }
 );
+
 
 // updare user password
 interface IUpdatePassword {
