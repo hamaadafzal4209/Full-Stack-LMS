@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSlice } from "./features/api/apiSlice";
 import authSlice from "./features/auth/authSlice";
-import toast from "react-hot-toast";
 
 export const store = configureStore({
   reducer: {
