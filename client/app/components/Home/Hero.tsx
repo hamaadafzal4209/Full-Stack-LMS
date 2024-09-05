@@ -19,6 +19,7 @@ const Hero: FC<Props> = () => {
           <div className="absolute inset-0 rounded-full hero_animation"></div>
           <Image
             src={heroBanner}
+            priority
             alt="Banner Image"
             className="w-11/12 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-cover rounded-full"
           />

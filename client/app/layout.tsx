@@ -9,6 +9,7 @@ import { useLoadUserQuery } from "./redux/features/api/apiSlice";
 import { FC, ReactNode } from "react";
 import Loader from "./components/Loader/Loader";
 
+// Font configurations
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -21,6 +22,7 @@ const josefin = Josefin_Sans({
   variable: "--font-Josefin",
 });
 
+// RootLayout Component
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,6 +46,7 @@ export default function RootLayout({
   );
 }
 
+// Custom Component for loading user
 const Custom: FC<{ children: ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
   return <>{isLoading ? <Loader /> : children}</>;
