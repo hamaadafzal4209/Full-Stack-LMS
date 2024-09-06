@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   token: "",
-  user: "",
+  user: null, // Assuming user is an object
 };
 
 const authSlice = createSlice({
@@ -10,18 +10,22 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     userRegistration: (state, action: PayloadAction<{ token: string }>) => {
+      localStorage.setItem('access_token', action.payload.token);
       state.token = action.payload.token;
     },
     userLoggedIn: (
       state,
       action: PayloadAction<{ accessToken: string; user: any }>
     ) => {
+      localStorage.setItem('access_token', action.payload.accessToken);
       state.token = action.payload.accessToken;
       state.user = action.payload.user;
     },
     userLoggedOut: (state) => {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
       state.token = "";
-      state.user = "";
+      state.user = null;
     },
   },
 });

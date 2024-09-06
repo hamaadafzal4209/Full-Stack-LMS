@@ -5,6 +5,13 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URI,
+    prepareHeaders: (headers) => {
+      const accessToken = localStorage.getItem('access_token');
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+      return headers;
+    },
   }),
   endpoints: (builder) => ({
     refreshToken: builder.query({
@@ -20,19 +27,19 @@ export const apiSlice = createApi({
         method: "GET",
         credentials: "include" as const,
       }),
-      async onQueryStarted(arg, {queryFulfilled, dispatch}){
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
           dispatch(
             userLoggedIn({
               accessToken: result.data.accessToken,
-              user: result.data.user
+              user: result.data.user,
             })
           );
-        } catch (error: any) {
-          console.log(error)
+        } catch (error) {
+          console.log(error);
         }
-      }
+      },
     }),
   }),
 });

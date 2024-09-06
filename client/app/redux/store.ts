@@ -15,9 +15,20 @@ export const store = configureStore({
 // Ensure the token is loaded on app initialization
 const initializeApp = async () => {
   try {
-    await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}));
-    await store.dispatch(apiSlice.endpoints.loadUser.initiate({}));
-  } catch (error: unknown) {
+    // Check if tokens are present in localStorage
+    const accessToken = localStorage.getItem('access_token');
+    const refreshToken = localStorage.getItem('refresh_token');
+    
+    console.log('Access Token:', accessToken);
+    console.log('Refresh Token:', refreshToken);
+
+    if (accessToken && refreshToken) {
+      await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}));
+      await store.dispatch(apiSlice.endpoints.loadUser.initiate({}));
+    } else {
+      console.log("No access token found in localStorage");
+    }
+  } catch (error) {
     console.log("Initialization error:", error);
   }
 };
